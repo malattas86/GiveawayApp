@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "359987892543",
+    "project_id": "giveawayapp-1caa9",
+    "storage_bucket": "giveawayapp-1caa9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359987892543:android:5b846f2a4e47567571038a",
+        "android_client_info": {
+          "package_name": "com.mats.giveawayapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359987892543-li7mci7rgvffd9fmnafu2v2j2ncl9um2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXas9wXr48wBVT8Dl7h2G3AMSv9FXcQCY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359987892543-li7mci7rgvffd9fmnafu2v2j2ncl9um2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
