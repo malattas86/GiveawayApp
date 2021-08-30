@@ -15,7 +15,7 @@ class DashboardAdapter(
     private var list: ArrayList<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     /**
-     * Called when RecyclerView needs a new [ViewHolder] of the given type to represent
+     * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
      * an item.
      *
      *
@@ -38,7 +38,7 @@ class DashboardAdapter(
      * @see .onBindViewHolder
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return ItemsListAdapter.MyViewHolder(
+        return MyViewHolder(
             LayoutInflater.from(context).inflate(
                 R.layout.item_dashboard_layout,
                 parent,
@@ -49,7 +49,7 @@ class DashboardAdapter(
 
     /**
      * Called by RecyclerView to display the data at the specified position. This method should
-     * update the contents of the [ViewHolder.itemView] to reflect the item at the given
+     * update the contents of the [RecyclerView.ViewHolder.itemView] to reflect the item at the given
      * position.
      *
      *
@@ -58,7 +58,7 @@ class DashboardAdapter(
      * invalidated or the new position cannot be determined. For this reason, you should only
      * use the `position` parameter while acquiring the related data item inside
      * this method and should not keep a copy of it. If you need the position of an item later
-     * on (e.g. in a click listener), use [ViewHolder.getAdapterPosition] which will
+     * on (e.g. in a click listener), use [RecyclerView.ViewHolder.getAdapterPosition] which will
      * have the updated adapter position.
      *
      * Override [.onBindViewHolder] instead if Adapter can
@@ -74,7 +74,9 @@ class DashboardAdapter(
         if (holder is ItemsListAdapter.MyViewHolder) {
             GlideLoader(context).loadItemPicture(model.image!!, holder.itemView.findViewById(R.id.iv_dashboard_item_image))
             holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_title).text = model.title
-            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_price).text = model.price
+            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_price).text =
+                holder.itemView.resources.getString(R.string.display_price, model.price)
+            //holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_price).text = "$" + model.price
         }
     }
 

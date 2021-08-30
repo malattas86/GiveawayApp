@@ -23,6 +23,10 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityAddItemBinding
     private var mItemId: String = ""
+    private var maItemImageURL = mutableListOf<String>()
+
+    private var mSelectedImageFileURI: Uri? = null
+    private var mItemImageURL: String = ""
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) {
             pickImages.launch("image/*")
@@ -54,9 +58,6 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private var mSelectedImageFileURI: Uri? = null
-    private var mItemImageURL: String = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityAddItemBinding.inflate(layoutInflater)
@@ -76,10 +77,6 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
     private fun setupActionBar() {
 
         setSupportActionBar(binding.toolbarAddItemActivity)
@@ -94,9 +91,8 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
     }
 
     fun imageUploadSuccess(imageURL: String) {
-        //hideProgressDialog()
-        //showErrorSnackBar("Image Item seccess: $imageURL", false)
         mItemImageURL = imageURL
+        maItemImageURL.add(mItemImageURL)
         uploadItemDetails()
     }
 
@@ -210,10 +206,12 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
             item.image!!,
             binding.ivItemImage
         )
-        binding.etItemTitle.setText(item.title)
-        binding.etItemPrice.setText("$${item.price}")
-        binding.etItemDescription.setText(item.description)
-        binding.etItemQuantity.setText(item.stock_quantity)
+        with(binding) {
+            etItemTitle.setText(item.title)
+            etItemPrice.setText("${item.price}")
+            etItemDescription.setText(item.description)
+            etItemQuantity.setText(item.stock_quantity)
+        }
     }
 
     private fun getItemDetails() {

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Toast
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityItemDetailsBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -69,10 +68,13 @@ class ItemDetailsActivity : BaseActivity() {
             item.image!!,
             binding.ivItemDetailImage
         )
-        binding.tvItemDetailsTitle.text = item.title
-        binding.tvItemDetailsPrice.text = "$${item.price}"
-        binding.tvItemDetailsDescription.text = item.description
-        binding.tvItemDetailsAvailableQuantity.text = item.stock_quantity
+        with(binding) {
+            tvItemDetailsTitle.text = item.title
+            tvItemDetailsPrice.text =
+                binding.tvItemDetailsPrice.resources.getString(R.string.display_price, item.price)
+            tvItemDetailsDescription.text = item.description
+            tvItemDetailsAvailableQuantity.text = item.stock_quantity
+        }
     }
 
     private fun getItemDetails() {

@@ -108,4 +108,6 @@
     <string name="lbl_item_description">Item Description</string>
     <string name="lbl_item_details_stock_quantity">Stock Quantity</string>
 
+    <string name="display_price">$%1$s</string>
+
 </resources>
