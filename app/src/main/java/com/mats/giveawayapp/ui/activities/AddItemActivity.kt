@@ -14,7 +14,9 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityAddItemBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Item
+import com.mats.giveawayapp.ui.adapters.ItemDetailsImagesAdapter
 import com.mats.giveawayapp.utils.Constants
+import com.mats.giveawayapp.utils.Constants.toArrayUri
 import com.mats.giveawayapp.utils.GlideLoader
 import java.io.IOException
 
@@ -23,10 +25,11 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityAddItemBinding
     private var mItemId: String = ""
-    private var maItemImageURL = mutableListOf<String>()
 
     private var mSelectedImageFileURI: Uri? = null
+    private var mSelectedImagesFileURI = ArrayList<Uri?>()
     private var mItemImageURL: String = ""
+    private var mItemImagesURL = ArrayList<String?>()
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) {
             pickImages.launch("image/*")
@@ -38,14 +41,21 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
             ).show()
         }
     }
-    private val pickImages = registerForActivityResult(ActivityResultContracts.GetContent()) {uri ->
-        uri?.let {imageURI ->
-            // The uri of selected image from phone storage.
-            mSelectedImageFileURI = imageURI
+    private val pickImages = registerForActivityResult(ActivityResultContracts.GetMultipleContents()) {uri ->
+        uri?.let {imagesURI ->
+
+            for (imageURI in imagesURI) {
+                if (!mSelectedImagesFileURI.contains(imageURI)) {
+
+                    mSelectedImagesFileURI.addAll(imagesURI)
+                }
+            }
+
             try {
-                GlideLoader(this)
-                    .loadUserPicture(mSelectedImageFileURI!!, binding.ivItemImage)
                 binding.ivAddUpdateItem.setImageResource(R.drawable.ic_vector_edit)
+
+                displayImages(mSelectedImagesFileURI)
+
 
             } catch (e: IOException) {
                 e.printStackTrace()
@@ -55,6 +65,23 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
                     Toast.LENGTH_LONG
                 ).show()
             }
+        }
+    }
+
+    private fun displayImages(images: ArrayList<Uri?>) {
+        if (images.size > 1)
+        {
+            binding.ivItemImage.visibility = View.GONE
+            binding.vpItemImages.visibility = View.VISIBLE
+
+            val adapterItems = ItemDetailsImagesAdapter(this, images)
+            binding.vpItemImages.adapter = adapterItems
+
+        } else {
+            binding.ivItemImage.visibility = View.VISIBLE
+            binding.vpItemImages.visibility = View.GONE
+            GlideLoader(this)
+                .loadUserPicture(images[0]!!, binding.ivItemImage)
         }
     }
 
@@ -90,9 +117,11 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
         binding.toolbarAddItemActivity.setNavigationOnClickListener { onBackPressed() }
     }
 
-    fun imageUploadSuccess(imageURL: String) {
-        mItemImageURL = imageURL
-        maItemImageURL.add(mItemImageURL)
+    fun imageUploadSuccess(imagesURL: ArrayList<String>) {
+        mItemImageURL = imagesURL[0]
+        for (imageURL in imagesURL) {
+            mItemImagesURL.add(imageURL)
+        }
         uploadItemDetails()
     }
 
@@ -108,7 +137,7 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     private fun uploadItemImage() {
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().uploadImageToCloudStorage(this, mSelectedImageFileURI,
+        FirestoreClass().uploadImageToCloudStorage(this, mSelectedImagesFileURI,
         Constants.ITEM_IMAGE)
     }
 
@@ -124,11 +153,12 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
             binding.etItemDescription.text.toString().trim { it <= ' '},
             binding.etItemPrice.text.toString().trim { it <= ' '},
             binding.etItemQuantity.text.toString().trim { it <= ' '},
-            mItemImageURL,
+            mItemImagesURL
+            //mItemImageURL,
 
         )
 
-        FirestoreClass().uploadItemDetails(this, item)
+        FirestoreClass().uploadItemDetails(this, item, mItemImagesURL)
     }
 
     private fun onClickSubmit() {
@@ -167,7 +197,7 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     private fun validateProductDetails(): Boolean {
         return when {
-            mSelectedImageFileURI == null -> {
+            mSelectedImagesFileURI.isEmpty()-> {
                 showErrorSnackBar(resources.getString(R.string.err_msg_select_item_image),
                     true)
                 false
@@ -202,10 +232,10 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
     fun itemDetailsSuccess(item: Item) {
         hideProgressDialog()
-        GlideLoader(this).loadItemPicture(
-            item.image!!,
-            binding.ivItemImage
-        )
+
+        displayImages(toArrayUri(item.images))
+        mSelectedImagesFileURI.addAll(toArrayUri(item.images))
+
         with(binding) {
             etItemTitle.setText(item.title)
             etItemPrice.setText("${item.price}")

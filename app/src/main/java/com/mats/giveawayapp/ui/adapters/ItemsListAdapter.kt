@@ -52,14 +52,14 @@ open class ItemsListAdapter(
         val model = list[position]
 
         if (holder is MyViewHolder) {
-            GlideLoader(context).loadItemPicture(model.image!!,
+            GlideLoader(context).loadItemPicture(model.images[0]!!,
                 holder.itemView.findViewById(R.id.iv_item_image))
             holder.itemView.findViewById<TextView>(R.id.tv_item_name).text = model.title
             holder.itemView.findViewById<TextView>(R.id.tv_item_price).text =
                 holder.itemView.resources.getString(R.string.display_price, model.price)
 
             holder.itemView.findViewById<ImageButton>(R.id.ib_delete_item).setOnClickListener {
-                fragment.deleteItem(model.item_id!!)
+                fragment.deleteItem(model.item_id!!, model.images)
             }
 
             holder.itemView.setOnClickListener {

@@ -10,7 +10,7 @@ data class Item(
     val description: String? = "",
     val price: String? = "",
     val stock_quantity: String? = "",
-    val image: String? = "",
+    val images: ArrayList<String?> = ArrayList(),
     var item_id: String? = ""
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -20,7 +20,7 @@ data class Item(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
-        parcel.readString(),
+        parcel.createStringArrayList() as ArrayList<String?>,
         parcel.readString()
     ) {
     }
@@ -32,7 +32,7 @@ data class Item(
         parcel.writeString(description)
         parcel.writeString(price)
         parcel.writeString(stock_quantity)
-        parcel.writeString(image)
+        parcel.writeStringList(images)
         parcel.writeString(item_id)
     }
 

@@ -222,8 +222,8 @@ class UserProfileActivity : BaseActivity() {
 
             if (mSelectedImageFileUri != null)
             {
-                FirestoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri,
-                Constants.USER_PROFILE_IMAGE)
+                /*FirestoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri,
+                Constants.USER_PROFILE_IMAGE)*/
             } else {
                 updateUserProfileDetails()
             }

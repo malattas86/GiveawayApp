@@ -8,7 +8,9 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityItemDetailsBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Item
+import com.mats.giveawayapp.ui.adapters.ItemDetailsImagesAdapter
 import com.mats.giveawayapp.utils.Constants
+import com.mats.giveawayapp.utils.Constants.toArrayUri
 import com.mats.giveawayapp.utils.GlideLoader
 
 class ItemDetailsActivity : BaseActivity() {
@@ -16,6 +18,8 @@ class ItemDetailsActivity : BaseActivity() {
     private lateinit var binding: ActivityItemDetailsBinding
 
     private var mItemId: String = ""
+
+    private var mImagesList: ArrayList<String?> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +32,11 @@ class ItemDetailsActivity : BaseActivity() {
             mItemId = intent.getStringExtra(Constants.EXTRA_ITEM_ID)!!
         }
         getItemDetails()
+
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -64,10 +73,14 @@ class ItemDetailsActivity : BaseActivity() {
 
     fun itemDetailsSuccess(item: Item) {
         hideProgressDialog()
-        GlideLoader(this).loadItemPicture(
-            item.image!!,
+        mImagesList.addAll(item.images)
+        val itemDetailsImagesAdapter =
+            ItemDetailsImagesAdapter(this, toArrayUri(mImagesList))
+        binding.vpItemDetailImage.adapter = itemDetailsImagesAdapter
+        /*GlideLoader(this).loadItemPicture(
+            item.images[0]!!,
             binding.ivItemDetailImage
-        )
+        )*/
         with(binding) {
             tvItemDetailsTitle.text = item.title
             tvItemDetailsPrice.text =

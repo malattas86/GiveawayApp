@@ -65,4 +65,12 @@ object Constants {
         return MimeTypeMap.getSingleton()
             .getExtensionFromMimeType(activity.contentResolver.getType(uri!!))
     }
+
+    fun toArrayUri(stringList: ArrayList<String?>): ArrayList<Uri?> {
+        val uriList: ArrayList<Uri?> = ArrayList()
+        for (string in stringList) {
+            uriList.add(Uri.parse(string))
+        }
+        return uriList
+    }
 }

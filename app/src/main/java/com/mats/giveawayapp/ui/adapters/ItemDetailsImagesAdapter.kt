@@ -1,21 +1,17 @@
 package com.mats.giveawayapp.ui.adapters
 
 import android.content.Context
-import android.util.Log
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.R
-import com.mats.giveawayapp.models.Item
-import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.utils.GlideLoader
 
-open class DashboardAdapter(
-    private val fragment: DashboardFragment,
-    private val context: Context,
-    private var list: ArrayList<Item>
+open class ItemDetailsImagesAdapter(
+    var context: Context,
+    var imagesList: ArrayList<Uri?>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     /**
      * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
@@ -43,7 +39,7 @@ open class DashboardAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
             LayoutInflater.from(context).inflate(
-                R.layout.item_dashboard_layout,
+                R.layout.item_details_layout,
                 parent,
                 false
             )
@@ -72,14 +68,11 @@ open class DashboardAdapter(
      * @param position The position of the item within the adapter's data set.
      */
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val model = list[position]
+        val model = imagesList[position]
 
         if (holder is MyViewHolder) {
-            Log.i(fragment.javaClass.simpleName, model.images.toString())
-            GlideLoader(context).loadItemPicture(model.images[0]!!, holder.itemView.findViewById(R.id.iv_dashboard_item_image))
-            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_title).text = model.title
-            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_price).text =
-                holder.itemView.resources.getString(R.string.display_price, model.price)
+            GlideLoader(context).loadItemPicture(model!!,
+                holder.itemView.findViewById(R.id.iv_item_details_images))
         }
     }
 
@@ -89,7 +82,7 @@ open class DashboardAdapter(
      * @return The total number of items in this adapter.
      */
     override fun getItemCount(): Int {
-        return list.size
+        return imagesList.size
     }
 
     /**

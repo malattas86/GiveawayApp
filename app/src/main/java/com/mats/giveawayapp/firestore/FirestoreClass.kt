@@ -5,8 +5,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
-import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
@@ -14,7 +14,6 @@ import com.google.firebase.storage.StorageReference
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.models.User
 import com.mats.giveawayapp.ui.activities.*
-import com.mats.giveawayapp.ui.fragments.BaseFragment
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
 import com.mats.giveawayapp.utils.Constants
@@ -22,6 +21,7 @@ import com.mats.giveawayapp.utils.Constants
 class FirestoreClass {
 
     private val mFirestore = FirebaseFirestore.getInstance()
+    private val mFireReference = FirebaseDatabase.getInstance("https://giveawayapp-1caa9-default-rtdb.europe-west1.firebasedatabase.app")
 
     fun registerUser(activity: RegisterActivity, userInfo: User) {
         // The "user" is collection name. If the collection is already created then it will not
@@ -85,7 +85,7 @@ class FirestoreClass {
             .addOnFailureListener { e ->
                 // Hide the progress dialog if there is any error which getting the item list
                 fragment.hideProgressDialog()
-                Log.e(fragment.javaClass.simpleName, "Error while getting item list, e")
+                Log.e(fragment.javaClass.simpleName, "Error while getting item list", e)
             }
     }
 
@@ -170,56 +170,62 @@ class FirestoreClass {
             }
     }
 
-    fun uploadImageToCloudStorage(activity: Activity, imageFileURI: Uri?, imageType: String) {
-        val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
-            imageType + System.currentTimeMillis() + "."
-                    + Constants.getFileExtension(
-                                        activity,
-                                        imageFileURI)
-        )
-        sRef.putFile(imageFileURI!!)
-            .addOnSuccessListener { taskSnapshot ->
-                // The image upload is success
-                Log.e(
-                    "Firebase Image URL",
-                    taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
-                )
+    fun uploadImageToCloudStorage(activity: Activity, imagesFileURI: ArrayList<Uri?>, imageType: String) {
+        val uriList: ArrayList<String> = ArrayList()
+        imagesFileURI.withIndex().forEach { (index, imageFileURI) ->
+            val sRef: StorageReference = FirebaseStorage.getInstance().reference.child(
+                imageType + System.currentTimeMillis() + "."
+                        + Constants.getFileExtension(
+                    activity, imageFileURI)
+            )
 
-                // Get the downloadable url from the task snapshot
-                taskSnapshot.metadata!!.reference!!.downloadUrl
-                    .addOnSuccessListener { uri ->
-                        Log.e("Downloadable Image URL", uri.toString())
-                        when (activity) {
-                            is UserProfileActivity -> {
-                                activity.imageUploadSuccess(uri.toString())
-                            }
-                            is AddItemActivity -> {
-                                activity.imageUploadSuccess(uri.toString())
+            sRef.putFile(imageFileURI!!)
+                .addOnSuccessListener { taskSnapshot ->
+                    // The image upload is success
+                    Log.e(
+                        "Firebase Image URL",
+                        taskSnapshot.metadata!!.reference!!.downloadUrl.toString()
+                    )
+
+
+                    // Get the downloadable url from the task snapshot
+                    taskSnapshot.metadata!!.reference!!.downloadUrl
+                        .addOnSuccessListener { uri ->
+                            Log.e("Downloadable Image URL", uri.toString())
+                            when (activity) {
+                                is UserProfileActivity -> {
+                                    activity.imageUploadSuccess(uri.toString())
+                                }
+                                is AddItemActivity -> {
+                                    uriList.add(uri.toString())
+                                    if (index == (imagesFileURI.size-1))
+                                        activity.imageUploadSuccess(uriList)
+                                }
                             }
                         }
-                    }
-            }
-            .addOnFailureListener{ exception ->
-
-                // Hide the progress dialog if there is any error. And print the error in log.
-                when (activity) {
-                    is UserProfileActivity -> {
-                        activity.hideProgressDialog()
-                    }
-                    is AddItemActivity -> {
-                        activity.hideProgressDialog()
-                    }
                 }
+                .addOnFailureListener{ exception ->
 
-                Log.e(
-                    activity.javaClass.simpleName,
-                    exception.message,
-                    exception
-                )
-            }
+                    // Hide the progress dialog if there is any error. And print the error in log.
+                    when (activity) {
+                        is UserProfileActivity -> {
+                            activity.hideProgressDialog()
+                        }
+                        is AddItemActivity -> {
+                            activity.hideProgressDialog()
+                        }
+                    }
+
+                    Log.e(
+                        activity.javaClass.simpleName,
+                        exception.message,
+                        exception
+                    )
+                }
+        }
     }
 
-    fun uploadItemDetails(activity: AddItemActivity, itemInfo: Item) {
+    fun uploadItemDetails(activity: AddItemActivity, itemInfo: Item, urlStrings: ArrayList<String?>) {
         mFirestore.collection(Constants.ITEMS)
             .document()
             .set(itemInfo, SetOptions.merge())
@@ -235,6 +241,32 @@ class FirestoreClass {
                     e
                 )
             }
+        val hashMap = HashMap<String, Any>()
+        for (i in urlStrings) {
+            hashMap["ImgLink_"+1] = i!!
+            Log.i(
+                activity.javaClass.simpleName,
+                mFireReference.reference.toString())
+        }
+
+        /*mFirestore.collection(Constants.ITEMS)
+            .document()
+            .set(hashMap)*/
+
+
+        /*mFireReference.reference.child("user").push().setValue(hashMap)
+            .addOnSuccessListener { e->
+                Log.i(
+                    activity.javaClass.simpleName,
+                    hashMap.toString())
+            }
+            .addOnFailureListener { e->
+                Log.e(
+                activity.javaClass.simpleName,
+                "Error while uploading the item details.",
+                e
+                )
+            }*/
     }
 
     fun getDashboardItemsList(fragment: DashboardFragment) {
@@ -254,26 +286,42 @@ class FirestoreClass {
             .addOnFailureListener { e ->
                 // Hide the progress dialog if there is any error which getting the dashboard item list
                 fragment.hideProgressDialog()
-                Log.e(fragment.javaClass.simpleName, "Error while getting dashboard item list, e")
+                Log.e(fragment.javaClass.simpleName,
+                    "Error while getting dashboard item list"
+                    , e)
             }
     }
 
-    fun deleteItem(fragment: ItemFragment, itemId: String) {
-        mFirestore.collection(Constants.ITEMS)
-            .document(itemId)
-            .delete()
-            .addOnSuccessListener {
-                fragment.itemDeleteSuccess()
-            }
-            .addOnFailureListener { e ->
-                fragment.hideProgressDialog()
+    fun deleteItem(fragment: ItemFragment, itemId: String, imagesURL: ArrayList<String?>) {
+        val pictureRef = FirebaseStorage.getInstance()
+        imagesURL.withIndex().forEach { (index, imageURL) ->
+            pictureRef
+                .reference
+                .child(pictureRef
+                    .getReferenceFromUrl(imageURL!!).name)
+                .delete()
+                .addOnSuccessListener {
+                    mFirestore.collection(Constants.ITEMS)
+                        .document(itemId)
+                        .delete()
+                        .addOnSuccessListener {
+                            if (index == imagesURL.size - 1)
+                                fragment.itemDeleteSuccess()
+                        }
+                        .addOnFailureListener { e ->
+                            fragment.hideProgressDialog()
 
-                Log.e(
-                    fragment.requireActivity().javaClass.simpleName,
-                    "Error while deleting the item.",
-                    e
-                )
-            }
+                            Log.e(
+                                fragment.requireActivity().javaClass.simpleName,
+                                "Error while deleting the item.",
+                                e
+                            )
+                        }
+                }
+                .addOnFailureListener {
+
+                }
+        }
     }
 
     fun getItemDetails(activity: Activity, itemId: String) {

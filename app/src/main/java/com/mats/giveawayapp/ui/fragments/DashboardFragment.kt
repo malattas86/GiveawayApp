@@ -84,8 +84,8 @@ class DashboardFragment : BaseFragment() {
 
             binding.rvDashboardItems.layoutManager = GridLayoutManager(activity, 2)
             binding.rvDashboardItems.setHasFixedSize(true)
-            val adapterItems = DashboardAdapter(requireActivity(), dashboardItemList)
-            binding.rvDashboardItems.adapter = adapterItems
+            val adapterDashboardItems = DashboardAdapter(this, requireActivity(), dashboardItemList)
+            binding.rvDashboardItems.adapter = adapterDashboardItems
         } else {
             binding.rvDashboardItems.visibility = GONE
             binding.tvNoItemsFound.visibility = VISIBLE

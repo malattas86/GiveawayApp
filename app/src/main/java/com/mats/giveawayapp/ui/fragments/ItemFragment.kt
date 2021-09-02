@@ -97,8 +97,8 @@ class ItemFragment : BaseFragment() {
         FirestoreClass().getItemsList(this)
     }
 
-    fun deleteItem(itemID: String) {
-        showAlertDialogToDeleteItem(itemID)
+    fun deleteItem(itemID: String, imagesURL: ArrayList<String?>) {
+        showAlertDialogToDeleteItem(itemID, imagesURL)
     }
 
     fun itemDeleteSuccess() {
@@ -114,7 +114,7 @@ class ItemFragment : BaseFragment() {
         getItemsListFromFireStore()
     }
 
-    private fun showAlertDialogToDeleteItem(itemId: String) {
+    private fun showAlertDialogToDeleteItem(itemId: String, imagesURL: ArrayList<String?>) {
         val builder = AlertDialog.Builder(requireActivity())
         // set title for alert dialog
         builder.setTitle(resources.getString(R.string.delete_dialog_title))
@@ -125,7 +125,7 @@ class ItemFragment : BaseFragment() {
         // performing positive action
         builder.setPositiveButton(resources.getString(R.string.yes)) { dialogInterface, _ ->
             showProgressDialog(resources.getString(R.string.please_wait))
-            FirestoreClass().deleteItem(this, itemId)
+            FirestoreClass().deleteItem(this, itemId, imagesURL)
             dialogInterface.dismiss()
         }
 

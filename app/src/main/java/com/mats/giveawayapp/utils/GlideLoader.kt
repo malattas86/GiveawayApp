@@ -29,7 +29,8 @@ class GlideLoader(val context: Context) {
             Glide
                 .with(context)
                 .load(image) // URI of the image
-                .centerCrop() // Scale type of the image
+                .fitCenter()
+                //.centerCrop() // Scale type of the image
                 .into(imageView) // the view in which the image will be loaded
         } catch (e: IOException) {
             e.printStackTrace()
