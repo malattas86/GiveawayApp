@@ -61,6 +61,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
+
                 <ImageView
                     android:id="@+id/iv_item_image"
                     android:layout_width="match_parent"
@@ -68,6 +69,17 @@
                     android:background="@color/colorImageViewBackground"
                     android:contentDescription="@string/content_description"
                     android:scaleType="fitXY" />
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    app:tabBackground="@drawable/tab_selector"
+                    app:tabGravity="center"
+                    android:contentDescription="@string/content_description"
+                    android:labelFor="@+id/iv_item_image"
+                    app:tabIndicatorHeight="0dp" />
 
                 <ImageView
                     android:id="@+id/iv_add_update_item"
@@ -94,7 +106,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fl_item_image">
 
-                <com.mats.giveawayapp.utils.MSPEditText
+                <com.mats.giveawayapp.utils.MSPTextInputEditText
                     android:id="@+id/et_item_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -117,7 +129,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_item_title">
 
-                <com.mats.giveawayapp.utils.MSPEditText
+                <com.mats.giveawayapp.utils.MSPTextInputEditText
                     android:id="@+id/et_item_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -140,7 +152,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_item_price">
 
-                <com.mats.giveawayapp.utils.MSPEditText
+                <com.mats.giveawayapp.utils.MSPTextInputEditText
                     android:id="@+id/et_item_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -164,7 +176,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/til_item_description">
 
-                <com.mats.giveawayapp.utils.MSPEditText
+                <com.mats.giveawayapp.utils.MSPTextInputEditText
                     android:id="@+id/et_item_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

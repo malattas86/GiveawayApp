@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.mats.giveawayapp.R
+import com.mats.giveawayapp.databinding.ItemImagesDetailsLayoutBinding
 import com.mats.giveawayapp.utils.GlideLoader
 
 open class ItemDetailsImagesAdapter(
@@ -38,9 +38,8 @@ open class ItemDetailsImagesAdapter(
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.item_details_layout,
-                parent,
+            ItemImagesDetailsLayoutBinding.inflate(
+                LayoutInflater.from(parent.context), parent,
                 false
             )
         )
@@ -72,9 +71,18 @@ open class ItemDetailsImagesAdapter(
 
         if (holder is MyViewHolder) {
             GlideLoader(context).loadItemPicture(model!!,
-                holder.itemView.findViewById(R.id.iv_item_details_images))
+                holder.binding.ivItemDetailsImages)
+
+            holder.binding.clImagesDetails.setOnLongClickListener{
+                    holder.binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE
+                    return@setOnLongClickListener true
+                }
         }
     }
+
+    /*fun markSelectedItem(index: Int) : Boolean {
+        return false
+    }*/
 
     /**
      * Returns the total number of items in the data set held by the adapter.
@@ -88,5 +96,6 @@ open class ItemDetailsImagesAdapter(
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(val binding: ItemImagesDetailsLayoutBinding)
+        : RecyclerView.ViewHolder(binding.root)
 }

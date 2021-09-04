@@ -11,9 +11,11 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.FragmentDashboardBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Item
+import com.mats.giveawayapp.ui.activities.ItemDetailsActivity
 import com.mats.giveawayapp.ui.activities.LoginActivity
 import com.mats.giveawayapp.ui.activities.SettingsActivity
-import com.mats.giveawayapp.ui.adapters.DashboardAdapter
+import com.mats.giveawayapp.ui.adapters.DashboardItemListAdapter
+import com.mats.giveawayapp.utils.Constants
 
 class DashboardFragment : BaseFragment() {
 
@@ -84,8 +86,17 @@ class DashboardFragment : BaseFragment() {
 
             binding.rvDashboardItems.layoutManager = GridLayoutManager(activity, 2)
             binding.rvDashboardItems.setHasFixedSize(true)
-            val adapterDashboardItems = DashboardAdapter(this, requireActivity(), dashboardItemList)
+            val adapterDashboardItems = DashboardItemListAdapter(this, requireActivity(), dashboardItemList)
             binding.rvDashboardItems.adapter = adapterDashboardItems
+
+            adapterDashboardItems.setOnClickListener(object: DashboardItemListAdapter.OnClickListener{
+                override fun onClick(position: Int, item: Item) {
+                    val intent = Intent(context, ItemDetailsActivity::class.java)
+                    intent.putExtra(Constants.EXTRA_ITEM_ID, item.item_id)
+                    startActivity(intent)
+                }
+
+            })
         } else {
             binding.rvDashboardItems.visibility = GONE
             binding.tvNoItemsFound.visibility = VISIBLE

@@ -5,10 +5,12 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.FirebaseApp
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityAddItemBinding
@@ -76,6 +78,9 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
             val adapterItems = ItemDetailsImagesAdapter(this, images)
             binding.vpItemImages.adapter = adapterItems
+            TabLayoutMediator(binding.tabLayout, binding.vpItemImages) { tab, position ->
+
+            }.attach()
 
         } else {
             binding.ivItemImage.visibility = View.VISIBLE

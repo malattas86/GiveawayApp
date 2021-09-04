@@ -3,10 +3,7 @@ package com.mats.giveawayapp.ui.adapters
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ItemListLayoutBinding
@@ -21,8 +18,6 @@ open class ItemsListAdapter(
     private val context: Context,
     private var list: ArrayList<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
-    private lateinit var binding: ItemListLayoutBinding
     /**
      * Inflates the item views which is designed in xml layout file
      *
@@ -31,11 +26,9 @@ open class ItemsListAdapter(
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.item_list_layout,
-                parent,
-                false)
-        )
+            ItemListLayoutBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent, false))
     }
 
     /**
@@ -53,12 +46,12 @@ open class ItemsListAdapter(
 
         if (holder is MyViewHolder) {
             GlideLoader(context).loadItemPicture(model.images[0]!!,
-                holder.itemView.findViewById(R.id.iv_item_image))
-            holder.itemView.findViewById<TextView>(R.id.tv_item_name).text = model.title
-            holder.itemView.findViewById<TextView>(R.id.tv_item_price).text =
-                holder.itemView.resources.getString(R.string.display_price, model.price)
+                holder.binding.ivItemImage)
+            holder.binding.tvItemName.text = model.title
+            holder.binding.tvItemPrice.text =
+                holder.binding.root.resources.getString(R.string.display_price, model.price)
 
-            holder.itemView.findViewById<ImageButton>(R.id.ib_delete_item).setOnClickListener {
+            holder.binding.ibDeleteItem.setOnClickListener {
                 fragment.deleteItem(model.item_id!!, model.images)
             }
 
@@ -66,7 +59,6 @@ open class ItemsListAdapter(
                 val intent = Intent(context, ItemDetailsActivity::class.java)
                 intent.putExtra(Constants.EXTRA_ITEM_ID, model.item_id)
                 context.startActivity(intent)
-
             }
         }
     }
@@ -78,5 +70,6 @@ open class ItemsListAdapter(
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(val binding: ItemListLayoutBinding)
+        : RecyclerView.ViewHolder(binding.root)
 }

@@ -1,22 +1,24 @@
 package com.mats.giveawayapp.ui.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.R
+import com.mats.giveawayapp.databinding.ItemDashboardLayoutBinding
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.utils.GlideLoader
 
-open class DashboardAdapter(
+open class DashboardItemListAdapter(
     private val fragment: DashboardFragment,
     private val context: Context,
     private var list: ArrayList<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+    private var onClickListener: OnClickListener? = null
+
     /**
      * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
      * an item.
@@ -42,9 +44,8 @@ open class DashboardAdapter(
      */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MyViewHolder(
-            LayoutInflater.from(context).inflate(
-                R.layout.item_dashboard_layout,
-                parent,
+            ItemDashboardLayoutBinding.inflate(
+                LayoutInflater.from(parent.context),parent,
                 false
             )
         )
@@ -75,11 +76,19 @@ open class DashboardAdapter(
         val model = list[position]
 
         if (holder is MyViewHolder) {
-            Log.i(fragment.javaClass.simpleName, model.images.toString())
-            GlideLoader(context).loadItemPicture(model.images[0]!!, holder.itemView.findViewById(R.id.iv_dashboard_item_image))
-            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_title).text = model.title
-            holder.itemView.findViewById<TextView>(R.id.tv_dashboard_item_price).text =
-                holder.itemView.resources.getString(R.string.display_price, model.price)
+
+            GlideLoader(context)
+                .loadItemPicture(model.images[0]!!,
+                    holder.binding.ivDashboardItemImage)
+            holder.binding.tvDashboardItemTitle.text = model.title
+            holder.binding.tvDashboardItemPrice.text =
+                holder.binding.root.resources.getString(R.string.display_price, model.price)
+
+            holder.itemView.setOnClickListener {
+                if (onClickListener != null) {
+                    onClickListener!!.onClick(position, model)
+                }
+            }
         }
     }
 
@@ -95,5 +104,14 @@ open class DashboardAdapter(
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */
-    class MyViewHolder(view: View) : RecyclerView.ViewHolder(view)
+    class MyViewHolder(val binding: ItemDashboardLayoutBinding)
+        : RecyclerView.ViewHolder(binding.root)
+
+    fun setOnClickListener(onClickListener: OnClickListener) {
+        this.onClickListener = onClickListener
+    }
+
+    interface OnClickListener {
+        fun onClick(position: Int, item: Item)
+    }
 }

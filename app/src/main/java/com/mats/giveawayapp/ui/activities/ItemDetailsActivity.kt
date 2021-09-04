@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import com.google.android.material.tabs.TabLayoutMediator
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityItemDetailsBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -77,10 +78,10 @@ class ItemDetailsActivity : BaseActivity() {
         val itemDetailsImagesAdapter =
             ItemDetailsImagesAdapter(this, toArrayUri(mImagesList))
         binding.vpItemDetailImage.adapter = itemDetailsImagesAdapter
-        /*GlideLoader(this).loadItemPicture(
-            item.images[0]!!,
-            binding.ivItemDetailImage
-        )*/
+        TabLayoutMediator(binding.tabLayout, binding.vpItemDetailImage) { tab, position ->
+
+        }.attach()
+
         with(binding) {
             tvItemDetailsTitle.text = item.title
             tvItemDetailsPrice.text =
