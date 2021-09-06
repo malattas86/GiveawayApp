@@ -19,14 +19,15 @@
             android:layout_height="match_parent"
             android:scaleType="fitXY"
             android:background="@drawable/app_gradient_color_background"
-            android:contentDescription="TODO" />
+            android:contentDescription="@string/todo" />
 
         <com.mats.giveawayapp.utils.MSPTextViewBold
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:text="@string/app_name"
-            android:textSize="35sp"/>
+            android:textColor="#212121"
+            android:textSize="35sp" />
 
 
     </FrameLayout>
@@ -36,7 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="35dp"
-        android:text="LOGIN SCREEN"
+        android:text="@string/login_screen"
         android:textColor="#222934"
         android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +54,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="35dp"
         android:layout_marginEnd="16dp"
-        android:hint="Email Id"
+        android:hint="@string/til_email_id"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_title">
@@ -63,6 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
+            android:textColor="#757575"
             tools:text="abc@gmail.com" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,7 +78,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
         android:layout_marginEnd="16dp"
-        android:hint="Passwrod"
+        android:hint="@string/til_login_password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/til_login_email">
@@ -86,20 +88,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
-            tools:text="123456"/>
+            android:textColor="#757575"
+            tools:text="123456" />
     </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/tv_forgot_password"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:foreground="?attr/selectableItemBackground"
-        android:padding="5dp"
-        android:text="Forgot Password"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/til_login_password"/>
 
     <com.mats.giveawayapp.utils.MSPButton
         android:id="@+id/btn_login"
@@ -114,13 +105,25 @@
         android:gravity="center"
         android:paddingTop="@dimen/btn_padding"
         android:paddingBottom="@dimen/btn_padding"
-        android:text="Login"
+        android:text="@string/btn_login"
         android:textColor="@color/white"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_forgot_password" />
+
+    <TextView
+        android:id="@+id/tv_forgot_password"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:foreground="?attr/selectableItemBackground"
+        android:padding="5dp"
+        android:text="@string/tv_forgot_password"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/til_login_password"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -138,7 +141,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="8dp"
             android:padding="5dp"
-            android:text="Don\'t have an account?" />
+            android:text="@string/tv_don_t_have_an_account" />
 
         <TextView
             android:id="@+id/tv_register"
@@ -147,7 +150,7 @@
             android:layout_marginTop="8dp"
             android:foreground="?attr/selectableItemBackground"
             android:padding="5dp"
-            android:text="Register"
+            android:text="@string/tv_register"
             android:textStyle="bold" />
     </LinearLayout>
 

@@ -11,6 +11,7 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.FragmentDashboardBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Item
+import com.mats.giveawayapp.ui.activities.CartListActivity
 import com.mats.giveawayapp.ui.activities.ItemDetailsActivity
 import com.mats.giveawayapp.ui.activities.LoginActivity
 import com.mats.giveawayapp.ui.activities.SettingsActivity
@@ -72,6 +73,16 @@ class DashboardFragment : BaseFragment() {
                     startActivity(Intent(activity, LoginActivity::class.java))
                 }
             }
+
+            R.id.action_cart -> {
+                if (FirebaseAuth.getInstance().currentUser != null)
+                {
+                    startActivity(Intent(activity, CartListActivity::class.java))
+                }
+                else {
+                    startActivity(Intent(activity, LoginActivity::class.java))
+                }
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -86,13 +97,14 @@ class DashboardFragment : BaseFragment() {
 
             binding.rvDashboardItems.layoutManager = GridLayoutManager(activity, 2)
             binding.rvDashboardItems.setHasFixedSize(true)
-            val adapterDashboardItems = DashboardItemListAdapter(this, requireActivity(), dashboardItemList)
+            val adapterDashboardItems = DashboardItemListAdapter( requireActivity(), dashboardItemList)
             binding.rvDashboardItems.adapter = adapterDashboardItems
 
             adapterDashboardItems.setOnClickListener(object: DashboardItemListAdapter.OnClickListener{
                 override fun onClick(position: Int, item: Item) {
                     val intent = Intent(context, ItemDetailsActivity::class.java)
                     intent.putExtra(Constants.EXTRA_ITEM_ID, item.item_id)
+                    intent.putExtra(Constants.EXTRA_iTEM_OWNER_ID, item.user_id)
                     startActivity(intent)
                 }
 

@@ -58,6 +58,7 @@ open class ItemsListAdapter(
             holder.itemView.setOnClickListener {
                 val intent = Intent(context, ItemDetailsActivity::class.java)
                 intent.putExtra(Constants.EXTRA_ITEM_ID, model.item_id)
+                intent.putExtra(Constants.EXTRA_iTEM_OWNER_ID, model.user_id)
                 context.startActivity(intent)
             }
         }

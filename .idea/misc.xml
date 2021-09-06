@@ -14,12 +14,14 @@
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_launcher.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.11197916666666667" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_add.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_add_item.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_add_photo.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_chevron_right.xml" value="0.16979166666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_delete.xml" value="0.2546875" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_done.xml" value="0.2546875" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_edit.xml" value="0.2703125" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_remove.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_settings.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_white_color_back_24dp.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/item_dashboard_background.xml" value="0.2703125" />
@@ -28,8 +30,9 @@
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/user_image_background.xml" value="0.2703125" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_add_item.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_base.xml" value="0.1" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_cart_list.xml" value="0.6" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_dashboard.xml" value="0.25416666666666665" />
-        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_forgot_password.xml" value="0.536" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_forgot_password.xml" value="0.486159169550173" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_item_details.xml" value="0.4058127018299246" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_item_list.xml" value="0.4" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/activity_login.xml" value="0.4727954971857411" />
@@ -42,6 +45,7 @@
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_base.xml" value="0.184375" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_item.xml" value="0.1" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_cart_layout.xml" value="0.536" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_dashboard_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_details_layout.xml" value="0.21603260869565216" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_images_details_layout.xml" value="0.12360688956433637" />

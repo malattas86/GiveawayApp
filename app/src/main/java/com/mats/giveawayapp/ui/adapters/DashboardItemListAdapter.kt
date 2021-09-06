@@ -8,11 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ItemDashboardLayoutBinding
 import com.mats.giveawayapp.models.Item
-import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.utils.GlideLoader
 
 open class DashboardItemListAdapter(
-    private val fragment: DashboardFragment,
     private val context: Context,
     private var list: ArrayList<Item>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {

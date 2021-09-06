@@ -35,6 +35,16 @@ object Constants {
 
     const val EXTRA_ITEM_ID: String = "extra_item_id"
 
+    const val EXTRA_iTEM_OWNER_ID: String = "extra_item_owner_id"
+
+    const val DEFAULT_CART_QUANTITY: String = "1"
+
+    const val CART_ITEMS: String = "cart_items"
+
+    const val ITEM_ID: String = "item_id"
+
+    const val CART_QUANTITY: String = "cart_quantity"
+
 
     const val PWD_WEAK: String = "WEAK"
     const val PWD_MEDIUM: String = "MEDIUM"
