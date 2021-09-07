@@ -15,10 +15,20 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GiveawayApp">
         <activity
+            android:name=".ui.activities.AddEditAddressActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
+            android:name=".ui.activities.AddressListActivity"
+            android:exported="true"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
+        <activity
             android:name=".ui.activities.CartListActivity"
             android:exported="true"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"/>
+            android:theme="@style/Theme.MaterialComponents.Light.NoActionBar" />
         <activity
             android:name=".ui.activities.ItemDetailsActivity"
             android:exported="true"
