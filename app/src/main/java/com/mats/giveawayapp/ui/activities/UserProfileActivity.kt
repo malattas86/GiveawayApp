@@ -61,6 +61,8 @@ class UserProfileActivity : BaseActivity() {
 
         binding.etEmail.isEnabled = false
         binding.etEmail.setText(mUserDetails.email)
+        binding.etUsername.isEnabled = false
+        binding.etUsername.setText(mUserDetails.userName)
     }
 
     private fun setActionBar() {

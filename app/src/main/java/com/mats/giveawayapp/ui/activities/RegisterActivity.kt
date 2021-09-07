@@ -198,7 +198,8 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
 
                         val user = User(
                             firebaseUser.uid,
-                            binding.etRegisterEmail.text.toString().trim { it <= ' '}
+                            userName = binding.etUsername.text.toString().trim { it <= ' '},
+                            email = binding.etRegisterEmail.text.toString().trim { it <= ' '}
                         )
 
                         FirestoreClass().registerUser(this, user)
@@ -224,6 +225,14 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
             resources.getString(R.string.register_success),
             Toast.LENGTH_SHORT
         ).show()
+
+        /**
+         * Here the new user registered is automatically signed-in so we just sign-out the user from firebase
+         * and send him to Intro Screen for Sign-In
+         */
+        FirebaseAuth.getInstance().signOut()
+        // Finish the Register Screen
+        finish()
     }
 
     private fun onClickToLogin() {

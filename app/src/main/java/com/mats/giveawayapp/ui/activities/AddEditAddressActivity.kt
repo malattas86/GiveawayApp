@@ -2,8 +2,10 @@ package com.mats.giveawayapp.ui.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityAddEditAddressBinding
+import com.mats.giveawayapp.firestore.FirestoreClass
 
 class AddEditAddressActivity : AppCompatActivity() {
 
@@ -15,6 +17,10 @@ class AddEditAddressActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         setupActionBar()
+
+        binding.btnSubmitAddress.setOnClickListener{
+
+        }
     }
 
     private fun setupActionBar() {

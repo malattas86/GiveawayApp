@@ -14,6 +14,7 @@ import com.google.firebase.storage.StorageReference
 import com.mats.giveawayapp.models.CartItem
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.models.User
+import com.mats.giveawayapp.models.UserEmail
 import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
@@ -28,7 +29,7 @@ class FirestoreClass {
         // The "user" is collection name. If the collection is already created then it will not
         // create the same one again.
         userInfo.id?.let {
-            mFirestore.collection(Constants.USER)
+            mFirestore.collection(Constants.USERS)
                 // Document ID for users fields. Here the document it is new ID.
                 .document(it)
                 // Here the userInfo are Field and the SetOption is set to merge. It is for if we went
@@ -89,7 +90,7 @@ class FirestoreClass {
     fun getUserDetails(activity: Activity) {
 
         // Here we pass the collection name from which we wants the data.
-        mFirestore.collection(Constants.USER)
+        mFirestore.collection(Constants.USERS)
             // The document id to get the Fields of user
             .document(getCurrentUserID())
             .get()
@@ -142,7 +143,7 @@ class FirestoreClass {
     }
 
     fun updateUserProfileData(activity: Activity, userHashMap: HashMap<String, Any>) {
-        mFirestore.collection(Constants.USER).document(getCurrentUserID())
+        mFirestore.collection(Constants.USERS).document(getCurrentUserID())
             .update(userHashMap)
             .addOnSuccessListener {
                 when (activity) {
@@ -490,6 +491,28 @@ class FirestoreClass {
                     "Error while updating the cart item.",
                     e
                 )
+            }
+    }
+
+    fun getEmailFromUser(context: Context, user: String) {
+
+        var email: String = String()
+        mFirestore.collection(Constants.USERS_EMAILS)
+            .whereEqualTo(Constants.USER, user)
+            .get()
+            .addOnSuccessListener { document ->
+                val us = document.documents
+                Log.e("test", us[0].toObject(UserEmail::class.java)?.email!!)
+                email = us[0].toObject(UserEmail::class.java)?.email!!
+
+                when(context) {
+                    is AddEditAddressActivity -> {
+                    }
+                }
+
+            }
+            .addOnFailureListener { e->
+                email = ""
             }
     }
 }

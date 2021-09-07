@@ -8,7 +8,7 @@ import android.webkit.MimeTypeMap
 
 object Constants {
     // Collections in Cloud Firestore
-    const val USER: String = "users"
+    const val USERS: String = "users"
     const val ITEMS: String = "items"
 
     const val MY_PREFERENCES: String = "MyPrefs"
@@ -45,6 +45,8 @@ object Constants {
 
     const val CART_QUANTITY: String = "cart_quantity"
 
+    const val USER: String = "user"
+    const val USERS_EMAILS: String = "users_emails"
 
     const val PWD_WEAK: String = "WEAK"
     const val PWD_MEDIUM: String = "MEDIUM"

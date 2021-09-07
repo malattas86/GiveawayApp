@@ -43,6 +43,7 @@
     <string name="btn_lbl_save">Save</string>
     <string name="hint_first_name">First Name</string>
     <string name="hint_last_name">Last Name</string>
+    <string name="hint_username">Username</string>
     <string name="hint_email">Email</string>
     <string name="hint_mobile_number">Mobile Number</string>
 
