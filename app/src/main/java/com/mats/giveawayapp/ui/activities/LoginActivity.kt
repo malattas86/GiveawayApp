@@ -7,6 +7,7 @@ import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
+import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityLoginBinding
@@ -62,7 +63,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
                 false
             }
             else -> {
-                showErrorSnackBar("Your details are valid. ", false)
                 true
             }
         }
@@ -73,24 +73,46 @@ class LoginActivity : BaseActivity(), View.OnClickListener {
 
             // show the progress dialog.
             showProgressDialog(resources.getString(R.string.please_wait))
-
-            // Get the text from editText and trim the space
             val email = binding.etLoginEmail.text.toString().trim { it <= ' '}
-            val password = binding.etLoginPassword.text.toString().trim { it <= ' '}
+            if (email.contains("@")) {
+                loginRegisteredUserWithEmail(email)
+            } else {
+                FirestoreClass().getEmailFromUser(this, email)
+            }
+        }
+    }
 
-            // Log-In using FirebaseAuth
-            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
+    fun loginRegisteredUserWithEmail(email: String) {
+        // Get the text from editText and trim the space
+        val password = binding.etLoginPassword.text.toString().trim { it <= ' '}
 
-                    if (task.isSuccessful) {
+        // Log-In using FirebaseAuth
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+
+                if (task.isSuccessful) {
+                    if(FirebaseAuth.getInstance().currentUser?.isEmailVerified!!) {
                         FirestoreClass().getUserDetails(this@LoginActivity)
                     } else {
                         hideProgressDialog()
-                        showErrorSnackBar(task.exception!!.message.toString(), true)
+                        showErrorSnackBar(
+                            resources.getString(R.string.pleas_verify_email),
+                            true)
+                        /**
+                         * Here we just sign-out until the user verify his email
+                         */
+                        FirebaseAuth.getInstance().signOut()
+
                     }
+                } else {
+                    hideProgressDialog()
+                    showErrorSnackBar(
+                        task.exception!!.message.toString(),
+                        true)
                 }
-        }
+            }
     }
+
 
     fun userLoggedInSuccess(user: User) {
         // Hide the progress dialog.

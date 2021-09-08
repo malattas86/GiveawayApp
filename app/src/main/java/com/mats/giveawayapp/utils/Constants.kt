@@ -45,7 +45,7 @@ object Constants {
 
     const val CART_QUANTITY: String = "cart_quantity"
 
-    const val USER: String = "user"
+    const val USERNAME: String = "userName"
     const val USERS_EMAILS: String = "users_emails"
 
     const val PWD_WEAK: String = "WEAK"

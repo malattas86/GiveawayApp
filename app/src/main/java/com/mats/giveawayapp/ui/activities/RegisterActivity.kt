@@ -3,6 +3,7 @@ package com.mats.giveawayapp.ui.activities
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -27,6 +28,7 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityRegisterBinding
     private var mColor: Int = R.color.weak
+    private var mUsernameAlreadyUsed: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -143,6 +145,16 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
      */
     private fun validateRegisterDetails(): Boolean {
         return when {
+            TextUtils.isEmpty(binding.etUsername.text.toString().trim {it <= ' '}) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_enter_username), true)
+                false
+            }
+
+            (binding.etUsername.text.toString().length < 6) -> {
+                showErrorSnackBar(resources.getString(R.string.err_msg_username_length), true)
+                false
+            }
+
             TextUtils.isEmpty(binding.etRegisterEmail.text.toString().trim {it <= ' '}) -> {
                 showErrorSnackBar(resources.getString(R.string.err_msg_enter_email), true)
                 false
@@ -183,37 +195,43 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
 
             showProgressDialog(resources.getString(R.string.please_wait))
 
-            val email: String = binding.etRegisterEmail.text.toString().trim { it <= ' '}
-            val password: String = binding.etRegisterPassword.text.toString().trim { it <= ' '}
+            val username: String = binding.etUsername.text.toString().trim { it <= ' '}
 
-            // Create an instance and create a register a user with email and password
-            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener { task ->
-
-                    // If the registration is successfully done
-                    if (task.isSuccessful) {
-
-                        // Firebase registered user
-                        val firebaseUser: FirebaseUser = task.result!!.user!!
-
-                        val user = User(
-                            firebaseUser.uid,
-                            userName = binding.etUsername.text.toString().trim { it <= ' '},
-                            email = binding.etRegisterEmail.text.toString().trim { it <= ' '}
-                        )
-
-                        FirestoreClass().registerUser(this, user)
-
-                        // FirebaseAuth.getInstance().signOut()
-                        // finish()
-
-                    } else {
-                        hideProgressDialog()
-                        // If the registering is not successful then show error message.
-                        showErrorSnackBar(task.exception!!.message.toString(), true)
-                    }
-                }
+            // check if username in use be another account.
+            FirestoreClass().checkUsernameExists(this, username)
         }
+    }
+
+    fun registerDetails() {
+        val email: String = binding.etRegisterEmail.text.toString().trim { it <= ' '}
+        val password: String = binding.etRegisterPassword.text.toString().trim { it <= ' '}
+
+        // Create an instance and create a register a user with email and password
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+
+                // If the registration is successfully done
+                if (task.isSuccessful) {
+                    FirebaseAuth.getInstance().currentUser?.sendEmailVerification()
+                        ?.addOnCompleteListener {
+                            // Firebase registered user
+                            val firebaseUser: FirebaseUser = task.result!!.user!!
+
+                            val user = User(
+                                firebaseUser.uid,
+                                userName = binding.etUsername.text.toString().trim { it <= ' '},
+                                email = binding.etRegisterEmail.text.toString().trim { it <= ' '}
+                            )
+
+                            FirestoreClass().registerUser(this, user)
+                        }
+
+                } else {
+                    hideProgressDialog()
+                    // If the registering is not successful then show error message.
+                    showErrorSnackBar(task.exception!!.message.toString(), true)
+                }
+            }
     }
 
     fun userRegistrationSuccess() {
@@ -258,5 +276,10 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    fun usernameFromFireStorage(username: String) {
+        hideProgressDialog()
+        mUsernameAlreadyUsed = username != ""
     }
 }

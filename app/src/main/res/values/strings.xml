@@ -8,12 +8,16 @@
     <string name="previous">Previous</string>
 
     <string name="content_description"> </string>
-    <string name="et_hint_email_id">Email Id</string>
+    <string name="et_hint_email_id">Username/Email</string>
     <string name="btn_lbl_register">Register</string>
     <string name="already_have_an_account">Already have an account</string>
     <string name="login"><u>Login</u></string>
 
+    <string name="err_msg_username_used">The username is already in use by another account.</string>
+    <string name="err_msg_enter_username">Please enter username.</string>
+    <string name="err_msg_username_length">Username should min length of 6.</string>
     <string name="err_msg_enter_email">Please enter email.</string>
+    <string name="err_msg_enter_username_or_email">Please enter username or email.</string>
     <string name="err_msg_enter_password">Please enter password.</string>
     <string name="err_msg_enter_confirm_password">Please enter confirm password.</string>
     <string name="err_msg_enter_mobile_number">Please enter mobil number</string>
@@ -23,7 +27,7 @@
     <string name="please_wait">Please Wait&#8230;</string>
 
     <string name="title_forgot_password">FORGOT PASSWORD</string>
-    <string name="forgot_password_title_description">Enter your username and e-mail address we\'ll send you a email to reset your password</string>
+    <string name="forgot_password_title_description">Enter your username or e-mail address we\'ll send you a email to reset your password</string>
     <string name="btn_lbl_submit">Submit</string>
 
     <string name="email_sent_success">Email send successfully to rest your password! \</string>
@@ -33,8 +37,8 @@
     <string name="password_strength_medium">Medium</string>
     <string name="password_strength_strong">Strong</string>
     <string name="password_strength_very_strong">Very Strong</string>
-    <string name="register_success">You are registered successfully.</string>
-
+    <string name="register_success">You are registered successfully. Please check your email for verification</string>
+    <string name="pleas_verify_email">Pleas verify your email address</string>
     <string name="title_profile">PROFILE</string>
     <string name="title_edit_profile">EDIT PROFILE</string>
     <string name="et_hint_mobile_number">Mobile Number</string>
@@ -124,7 +128,7 @@
     <string name="btn_lbl_checkout">Checkout</string>
     <string name="action_cart">My Cart</string>
     <string name="login_screen">LOGIN SCREEN</string>
-    <string name="til_email_id">Email Id</string>
+    <string name="til_email_id">Username/Email Id</string>
     <string name="til_login_password">Password</string>
     <string name="tv_forgot_password">Forgot Password</string>
     <string name="btn_login">Login</string>

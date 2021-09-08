@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityForgotPasswordBinding
+import com.mats.giveawayapp.firestore.FirestoreClass
 
 class ForgotPasswordActivity : BaseActivity(), View.OnClickListener {
 
@@ -52,27 +53,35 @@ class ForgotPasswordActivity : BaseActivity(), View.OnClickListener {
         val email = binding.etEmail.text.toString().trim { it <= ' '}
 
         if (email.isEmpty()) {
-            showErrorSnackBar(resources.getString(R.string.err_msg_enter_email), true)
+            showErrorSnackBar(resources.getString(R.string.err_msg_enter_username_or_email), true)
         } else {
             showProgressDialog(resources.getString(R.string.please_wait))
-            FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                .addOnCompleteListener { task ->
-                    hideProgressDialog()
-                    if (task.isSuccessful) {
-                        // Show the toast message and finish the forgot password activity to go
-                        // back to login screen
-                        Toast.makeText(
-                            this@ForgotPasswordActivity,
-                            resources.getString(R.string.email_sent_success),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        finish()
-                    } else {
-                        showErrorSnackBar(task.exception!!.message.toString(), true)
-                    }
-                }
+            if (email.contains("@")) {
+                forgetPasswordWithEmail(email)
+            } else {
+                FirestoreClass().getEmailFromUser(this, email)
+            }
         }
+    }
+
+    fun forgetPasswordWithEmail(email: String) {
+        FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+            .addOnCompleteListener { task ->
+                hideProgressDialog()
+                if (task.isSuccessful) {
+                    // Show the toast message and finish the forgot password activity to go
+                    // back to login screen
+                    Toast.makeText(
+                        this@ForgotPasswordActivity,
+                        resources.getString(R.string.email_sent_success),
+                        Toast.LENGTH_LONG
+                    ).show()
+
+                    finish()
+                } else {
+                    showErrorSnackBar(task.exception!!.message.toString(), true)
+                }
+            }
     }
 
     override fun onClick(v: View?) {

@@ -6,11 +6,12 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
+//import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import com.mats.giveawayapp.R
 import com.mats.giveawayapp.models.CartItem
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.models.User
@@ -23,7 +24,7 @@ import com.mats.giveawayapp.utils.Constants
 class FirestoreClass {
 
     private val mFirestore = FirebaseFirestore.getInstance()
-    private val mFireReference = FirebaseDatabase.getInstance("https://giveawayapp-1caa9-default-rtdb.europe-west1.firebasedatabase.app")
+    //private val mFireReference = FirebaseDatabase.getInstance("https://giveawayapp-1caa9-default-rtdb.europe-west1.firebasedatabase.app")
 
     fun registerUser(activity: RegisterActivity, userInfo: User) {
         // The "user" is collection name. If the collection is already created then it will not
@@ -496,23 +497,59 @@ class FirestoreClass {
 
     fun getEmailFromUser(context: Context, user: String) {
 
-        var email: String = String()
-        mFirestore.collection(Constants.USERS_EMAILS)
-            .whereEqualTo(Constants.USER, user)
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo(Constants.USERNAME, user)
             .get()
             .addOnSuccessListener { document ->
                 val us = document.documents
-                Log.e("test", us[0].toObject(UserEmail::class.java)?.email!!)
-                email = us[0].toObject(UserEmail::class.java)?.email!!
-
+                val email = us[0].toObject(UserEmail::class.java)?.email!!
                 when(context) {
-                    is AddEditAddressActivity -> {
+                    is LoginActivity -> {
+                        context.loginRegisteredUserWithEmail(email)
+                    }
+                    is ForgotPasswordActivity -> {
+                        context.forgetPasswordWithEmail(email)
                     }
                 }
-
             }
             .addOnFailureListener { e->
-                email = ""
+                when(context) {
+                    is LoginActivity -> {
+                        context.hideProgressDialog()
+                    }
+                    is ForgotPasswordActivity -> {
+                        context.hideProgressDialog()
+                    }
+                }
+                Log.e(
+                    context.javaClass.simpleName,
+                    "Error while get Email from username",
+                    e
+                )
+            }
+    }
+
+    fun checkUsernameExists(context: RegisterActivity, username: String){
+        mFirestore.collection(Constants.USERS)
+            .whereEqualTo(Constants.USERNAME, username)
+            .get()
+            .addOnSuccessListener { document ->
+
+                if (document.documents.isEmpty()){
+                    context.registerDetails()
+                } else {
+                    context.hideProgressDialog()
+                    context.showErrorSnackBar(
+                        context.resources
+                            .getString(R.string.err_msg_username_used), true
+                    )
+                }
+            }
+            .addOnFailureListener { e->
+                context.hideProgressDialog()
+                Log.e(context.javaClass.simpleName,
+                "Error while Check if username exist.",
+                e)
             }
     }
 }
