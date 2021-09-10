@@ -10,6 +10,7 @@ object Constants {
     // Collections in Cloud Firestore
     const val USERS: String = "users"
     const val ITEMS: String = "items"
+    const val ADDRESSES: String = "addresses"
 
     const val MY_PREFERENCES: String = "MyPrefs"
     const val LOGGED_IN_USERNAME: String = "logged_in_username"
@@ -47,6 +48,12 @@ object Constants {
 
     const val USERNAME: String = "userName"
     const val USERS_EMAILS: String = "users_emails"
+
+    const val HOME: String = "Home"
+    const val OFFICE: String = "Office"
+    const val OTHER: String = "Other"
+
+    const val EXTRA_ADDRESS_DETAILS: String = "AddressDetails"
 
     const val PWD_WEAK: String = "WEAK"
     const val PWD_MEDIUM: String = "MEDIUM"

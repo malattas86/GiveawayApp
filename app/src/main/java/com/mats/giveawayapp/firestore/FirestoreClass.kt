@@ -12,10 +12,10 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mats.giveawayapp.R
+import com.mats.giveawayapp.models.Address
 import com.mats.giveawayapp.models.CartItem
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.models.User
-import com.mats.giveawayapp.models.UserEmail
 import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
@@ -502,7 +502,7 @@ class FirestoreClass {
             .get()
             .addOnSuccessListener { document ->
                 val us = document.documents
-                val email = us[0].toObject(UserEmail::class.java)?.email!!
+                val email = us[0].toObject(User::class.java)?.email!!
                 when(context) {
                     is LoginActivity -> {
                         context.loginRegisteredUserWithEmail(email)
@@ -550,6 +550,86 @@ class FirestoreClass {
                 Log.e(context.javaClass.simpleName,
                 "Error while Check if username exist.",
                 e)
+            }
+    }
+
+    fun addAddress(activity: AddEditAddressActivity, addressInfo: Address) {
+        mFirestore.collection(Constants.ADDRESSES)
+            .document()
+            .set(addressInfo, SetOptions.merge())
+            .addOnSuccessListener {
+
+                activity.addUpdateAddressSuccess()
+
+            }
+            .addOnFailureListener { e->
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while adding the address.",
+                    e
+                )
+            }
+    }
+
+    fun getAddressesList(activity: AddressListActivity) {
+        mFirestore.collection(Constants.ADDRESSES)
+            .whereEqualTo(Constants.USER_ID, getCurrentUserID())
+            .get()
+            .addOnSuccessListener { document ->
+                // Here we get the list of boards in the form of documents.
+                val addressList: ArrayList<Address> = ArrayList()
+
+                for (i in document.documents) {
+                    val address = i.toObject(Address::class.java)!!
+                    address.id = i.id
+                    addressList.add(address)
+                }
+
+                activity.successAddressListFromFirestore(addressList)
+            }
+            .addOnFailureListener { e->
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while getting the AddressList",
+                    e
+                    )
+            }
+    }
+
+    fun updateAddress(activity: AddEditAddressActivity, addressInfo: Address, addressId: String) {
+        mFirestore.collection(Constants.ADDRESSES)
+            .document(addressId)
+            .set(addressInfo, SetOptions.merge())
+            .addOnSuccessListener {
+                activity.addUpdateAddressSuccess()
+            }
+            .addOnFailureListener { e->
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while updating the Address",
+                    e
+                )
+            }
+    }
+
+    fun deleteAddress(activity: AddressListActivity, addressId: String) {
+        mFirestore.collection(Constants.ADDRESSES)
+            .document(addressId)
+            .delete()
+            .addOnSuccessListener {
+                activity.deleteAddressSuccess()
+            }
+            .addOnFailureListener { e->
+                activity.hideProgressDialog()
+
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while deleting the address",
+                    e
+                )
             }
     }
 }

@@ -23,6 +23,7 @@
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_edit.xml" value="0.2703125" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_remove.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_settings.xml" value="0.11197916666666667" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_vector_white_delete.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/ic_white_color_back_24dp.xml" value="0.11197916666666667" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/item_dashboard_background.xml" value="0.2703125" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/drawable/item_grey_border_background.xml" value="0.16979166666666667" />
@@ -48,6 +49,7 @@
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_base.xml" value="0.184375" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/fragment_item.xml" value="0.1" />
+        <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_addres_layout.xml" value="0.12314814814814815" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_cart_layout.xml" value="0.536" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_dashboard_layout.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/maa86/Studium/GiveawayApp/app/src/main/res/layout/item_details_layout.xml" value="0.21603260869565216" />
