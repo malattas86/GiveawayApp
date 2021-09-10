@@ -1,5 +1,6 @@
 package com.mats.giveawayapp.ui.adapters
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.GlideLoader
 
 open class CartItemsListAdapter(
+    private val activity: CartListActivity,
     private val context: Context,
     private var list: ArrayList<CartItem>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -121,7 +123,7 @@ open class CartItemsListAdapter(
 
             holder.binding.ibRemoveCartItem.setOnClickListener {
                 if (model.cart_quantity == "1") {
-                    FirestoreClass().removeItemFromCart(context, model.id!!) //TODO: ask in dialog ob should remove item
+                    showAlertDialogToDeleteItem(model.id!!)
                 } else {
                     val cartQuantity: Int = model.cart_quantity?.toInt()!!
 
@@ -182,4 +184,31 @@ open class CartItemsListAdapter(
      */
     class MyViewHolder(val binding: ItemCartLayoutBinding)
         : RecyclerView.ViewHolder(binding.root)
+
+    private fun showAlertDialogToDeleteItem(itemId: String) {
+        val builder = AlertDialog.Builder(context)
+        // set title for alert dialog
+        builder.setTitle(context.resources.getString(R.string.delete_dialog_title))
+        // set message for alert dialog
+        builder.setMessage(context.resources.getString(R.string.msg_delete_itemCart_dialog))
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        // performing positive action
+        builder.setPositiveButton(context.resources.getString(R.string.yes)) { dialogInterface, _ ->
+            activity.showProgressDialog(context.resources.getString(R.string.please_wait))
+            FirestoreClass().removeItemFromCart(context, itemId)
+            dialogInterface.dismiss()
+        }
+
+        // performing negative action
+        builder.setNegativeButton(context.resources.getString(R.string.no)) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+        }
+
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
+    }
 }

@@ -93,7 +93,7 @@
     <string name="no_dashboard_item_found">No items found!</string>
 
     <string name="msg_item_delete_success">Your item is deleted successfully</string>
-    <string name="delete_dialog_title">Delete</string>
+    <string name="delete_dialog_title">Delete Item</string>
     <string name="msg_delete_dialog">Are you sure you want to delete the item?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -167,5 +167,9 @@
     <string name="msg_your_address_update_successfully">Your address was updated successfully</string>
 
     <string name="msg_your_address_deleted_successfully">Your address was deleted successfully</string>
+    <string name="msg_delete_address_dialog">Are you sure you want to delete the Address?</string>
+    <string name="delete_address_dialog_title">Delete Address</string>
+
+    <string name="msg_delete_itemCart_dialog">Are you sure you want to delete the Item from your Cart?</string>
 
 </resources>

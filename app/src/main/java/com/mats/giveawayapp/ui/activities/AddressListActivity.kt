@@ -1,5 +1,6 @@
 package com.mats.giveawayapp.ui.activities
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -74,11 +75,9 @@ class AddressListActivity : BaseActivity() {
 
             val deleteSwipeHandler = object: SwipeToDeleteCallback(this) {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    showProgressDialog(resources.getString(R.string.please_wait))
+                    //showProgressDialog(resources.getString(R.string.please_wait))
+                    showAlertDialogToDeleteItem(addressList[viewHolder.adapterPosition].id!!)
 
-                    FirestoreClass().deleteAddress(
-                        this@AddressListActivity,
-                        addressList[viewHolder.adapterPosition].id!!)
                 }
             }
 
@@ -107,5 +106,33 @@ class AddressListActivity : BaseActivity() {
         ).show()
 
         getAddressList()
+    }
+
+    private fun showAlertDialogToDeleteItem(itemId: String) {
+        val builder = AlertDialog.Builder(this)
+        // set title for alert dialog
+        builder.setTitle(resources.getString(R.string.delete_address_dialog_title))
+        // set message for alert dialog
+        builder.setMessage(resources.getString(R.string.msg_delete_address_dialog))
+        builder.setIcon(android.R.drawable.ic_dialog_alert)
+
+        // performing positive action
+        builder.setPositiveButton(resources.getString(R.string.yes)) { dialogInterface, _ ->
+            showProgressDialog(resources.getString(R.string.please_wait))
+            FirestoreClass().deleteAddress(this, itemId)
+            dialogInterface.dismiss()
+        }
+
+        // performing negative action
+        builder.setNegativeButton(resources.getString(R.string.no)) { dialogInterface, _ ->
+            dialogInterface.dismiss()
+            getAddressList()
+        }
+
+        // Create the AlertDialog
+        val alertDialog: AlertDialog = builder.create()
+        // set other dialog properties
+        alertDialog.setCancelable(false)
+        alertDialog.show()
     }
 }
