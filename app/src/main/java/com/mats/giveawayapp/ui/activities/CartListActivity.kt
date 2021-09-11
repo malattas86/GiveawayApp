@@ -1,5 +1,6 @@
 package com.mats.giveawayapp.ui.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,6 +11,7 @@ import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.CartItem
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.ui.adapters.CartItemsListAdapter
+import com.mats.giveawayapp.utils.Constants
 
 class CartListActivity : BaseActivity() {
 
@@ -23,6 +25,12 @@ class CartListActivity : BaseActivity() {
         setContentView(binding.root)
 
         setupActionBar()
+
+        binding.btnCheckout.setOnClickListener{
+            val intent = Intent(this, AddressListActivity::class.java)
+            intent.putExtra(Constants.EXTRA_SELECT_ADDRESS, true)
+            startActivity(intent)
+        }
     }
 
     private fun setupActionBar() {
@@ -56,7 +64,7 @@ class CartListActivity : BaseActivity() {
 
         mCartListItems = cartList
 
-        if (cartList.size > 0) {
+        if (mCartListItems.size > 0) {
             binding.rvCartItemList.visibility = View.VISIBLE
             binding.llCheckout.visibility = View.VISIBLE
             binding.tvNoCartItemFound.visibility = View.GONE
@@ -64,12 +72,13 @@ class CartListActivity : BaseActivity() {
             binding.rvCartItemList.layoutManager = LinearLayoutManager(this)
             binding.rvCartItemList.setHasFixedSize(true)
 
-            val adapterItems = CartItemsListAdapter(this, this, cartList)
+            val adapterItems = CartItemsListAdapter(
+                this, this, mCartListItems, true)
             binding.rvCartItemList.adapter = adapterItems
 
             var subTotal = 0.0
 
-            for (item in cartList) {
+            for (item in mCartListItems) {
                 val availableQuantity = item.stock_quantity?.toInt()!!
 
                 if (availableQuantity > 0) {

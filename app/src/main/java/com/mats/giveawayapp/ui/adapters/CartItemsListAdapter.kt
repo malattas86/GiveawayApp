@@ -1,5 +1,6 @@
 package com.mats.giveawayapp.ui.adapters
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
@@ -16,9 +17,10 @@ import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.GlideLoader
 
 open class CartItemsListAdapter(
-    private val activity: CartListActivity,
+    private val activity: Activity,
     private val context: Context,
-    private var list: ArrayList<CartItem>
+    private var list: ArrayList<CartItem>,
+    private val updateCartItem: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     /**
@@ -90,6 +92,12 @@ open class CartItemsListAdapter(
                 holder.binding.ibRemoveCartItem.visibility = View.GONE
                 holder.binding.ibAddCartItem.visibility = View.GONE
 
+                if (updateCartItem) {
+                    holder.binding.ibDeleteCartItem.visibility = View.VISIBLE
+                } else {
+                    holder.binding.ibDeleteCartItem.visibility = View.GONE
+                }
+
                 holder.binding.tvCartQuantity.text =
                     context.resources.getString(R.string.lbl_out_of_stock)
 
@@ -101,8 +109,15 @@ open class CartItemsListAdapter(
                 )
             }
             else {
-                holder.binding.ibRemoveCartItem.visibility = View.VISIBLE
-                holder.binding.ibAddCartItem.visibility = View.VISIBLE
+                if (updateCartItem) {
+                    holder.binding.ibRemoveCartItem.visibility = View.VISIBLE
+                    holder.binding.ibAddCartItem.visibility = View.VISIBLE
+                    holder.binding.ibDeleteCartItem.visibility = View.VISIBLE
+                } else {
+                    holder.binding.ibRemoveCartItem.visibility = View.GONE
+                    holder.binding.ibAddCartItem.visibility = View.GONE
+                    holder.binding.ibDeleteCartItem.visibility = View.GONE
+                }
 
                 holder.binding.tvCartQuantity.setTextColor(
                     ContextCompat.getColor(
@@ -195,7 +210,11 @@ open class CartItemsListAdapter(
 
         // performing positive action
         builder.setPositiveButton(context.resources.getString(R.string.yes)) { dialogInterface, _ ->
-            activity.showProgressDialog(context.resources.getString(R.string.please_wait))
+            when(activity) {
+                is CartListActivity -> {
+                    activity.showProgressDialog(context.resources.getString(R.string.please_wait))
+                }
+            }
             FirestoreClass().removeItemFromCart(context, itemId)
             dialogInterface.dismiss()
         }

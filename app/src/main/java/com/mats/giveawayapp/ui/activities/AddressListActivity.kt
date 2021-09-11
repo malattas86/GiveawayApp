@@ -1,5 +1,6 @@
 package com.mats.giveawayapp.ui.activities
 
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -13,12 +14,15 @@ import com.mats.giveawayapp.databinding.ActivityAddressListBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Address
 import com.mats.giveawayapp.ui.adapters.AddressListAdapter
+import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.SwipeToDeleteCallback
 import com.mats.giveawayapp.utils.SwipeToEditCallback
 
 class AddressListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddressListBinding
+
+    private var mSelectAddress: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,13 +33,19 @@ class AddressListActivity : BaseActivity() {
 
         binding.tvAddAddress.setOnClickListener {
             val intent = Intent(this, AddEditAddressActivity::class.java)
-            startActivity(intent)
+            startActivityForResult(intent, Constants.ADD_ADDRESS_REQUEST_CODE)
         }
-    }
 
-    override fun onResume() {
-        super.onResume()
         getAddressList()
+
+        if (intent.hasExtra(Constants.EXTRA_SELECT_ADDRESS)) {
+            mSelectAddress = intent.getBooleanExtra(Constants.EXTRA_SELECT_ADDRESS, false)
+        }
+
+        if (mSelectAddress) {
+            binding.tvTitle.text = resources.getString(R.string.title_select_address)
+
+        }
     }
 
     private fun setupActionBar() {
@@ -60,29 +70,31 @@ class AddressListActivity : BaseActivity() {
 
             binding.rvAddressList.layoutManager = LinearLayoutManager(this)
             binding.rvAddressList.setHasFixedSize(true)
-            val adapterItems = AddressListAdapter(this, addressList)
+            val adapterItems = AddressListAdapter(this, addressList, mSelectAddress)
             binding.rvAddressList.adapter = adapterItems
 
-            val editSwipeHandler = object: SwipeToEditCallback(this) {
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val adapter = binding.rvAddressList.adapter as AddressListAdapter
-                    adapter.notifyEditItem(viewHolder.adapterPosition)
+            if (!mSelectAddress) {
+                val editSwipeHandler = object: SwipeToEditCallback(this) {
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        val adapter = binding.rvAddressList.adapter as AddressListAdapter
+                        adapter.notifyEditItem(this@AddressListActivity, viewHolder.adapterPosition)
+                    }
                 }
-            }
 
-            val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
-            editItemTouchHelper.attachToRecyclerView(binding.rvAddressList)
+                val editItemTouchHelper = ItemTouchHelper(editSwipeHandler)
+                editItemTouchHelper.attachToRecyclerView(binding.rvAddressList)
 
-            val deleteSwipeHandler = object: SwipeToDeleteCallback(this) {
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    //showProgressDialog(resources.getString(R.string.please_wait))
-                    showAlertDialogToDeleteItem(addressList[viewHolder.adapterPosition].id!!)
+                val deleteSwipeHandler = object: SwipeToDeleteCallback(this) {
+                    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                        //showProgressDialog(resources.getString(R.string.please_wait))
+                        showAlertDialogToDeleteItem(addressList[viewHolder.adapterPosition].id!!)
 
+                    }
                 }
-            }
 
-            val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
-            deleteItemTouchHelper.attachToRecyclerView(binding.rvAddressList)
+                val deleteItemTouchHelper = ItemTouchHelper(deleteSwipeHandler)
+                deleteItemTouchHelper.attachToRecyclerView(binding.rvAddressList)
+            }
 
         } else {
             binding.rvAddressList.visibility = View.GONE
@@ -134,5 +146,12 @@ class AddressListActivity : BaseActivity() {
         // set other dialog properties
         alertDialog.setCancelable(false)
         alertDialog.show()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            getAddressList()
+        }
     }
 }

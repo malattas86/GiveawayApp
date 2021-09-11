@@ -11,6 +11,8 @@ object Constants {
     const val USERS: String = "users"
     const val ITEMS: String = "items"
     const val ADDRESSES: String = "addresses"
+    const val ORDERS: String = "orders"
+    const val CART_ITEMS: String = "cart_items"
 
     const val MY_PREFERENCES: String = "MyPrefs"
     const val LOGGED_IN_USERNAME: String = "logged_in_username"
@@ -40,8 +42,6 @@ object Constants {
 
     const val DEFAULT_CART_QUANTITY: String = "1"
 
-    const val CART_ITEMS: String = "cart_items"
-
     const val ITEM_ID: String = "item_id"
 
     const val CART_QUANTITY: String = "cart_quantity"
@@ -54,6 +54,10 @@ object Constants {
     const val OTHER: String = "Other"
 
     const val EXTRA_ADDRESS_DETAILS: String = "AddressDetails"
+
+    const val EXTRA_SELECT_ADDRESS: String = "extra_select_address"
+    const val ADD_ADDRESS_REQUEST_CODE: Int = 121
+    const val EXTRA_SELECTED_ADDRESS: String = "extra_selected_address"
 
     const val PWD_WEAK: String = "WEAK"
     const val PWD_MEDIUM: String = "MEDIUM"

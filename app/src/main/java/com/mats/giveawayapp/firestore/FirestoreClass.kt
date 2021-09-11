@@ -12,10 +12,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.mats.giveawayapp.R
-import com.mats.giveawayapp.models.Address
-import com.mats.giveawayapp.models.CartItem
-import com.mats.giveawayapp.models.Item
-import com.mats.giveawayapp.models.User
+import com.mats.giveawayapp.models.*
 import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
@@ -400,12 +397,18 @@ class FirestoreClass {
                     is CartListActivity -> {
                         activity.successCartItemsList(list)
                     }
+                    is CheckoutActivity -> {
+                        activity.successCartItemsList(list)
+                    }
                 }
             }
             .addOnFailureListener { e ->
 
                 when (activity) {
                     is CartListActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CheckoutActivity -> {
                         activity.hideProgressDialog()
                     }
                 }
@@ -417,7 +420,7 @@ class FirestoreClass {
             }
     }
 
-    fun getAllItemsList(activity: CartListActivity) {
+    fun getAllItemsList(activity: Activity) {
         mFirestore.collection(Constants.ITEMS)
             .get()
             .addOnSuccessListener { document ->
@@ -430,10 +433,24 @@ class FirestoreClass {
                     itemsList.add(item)
                 }
 
-                activity.successItemsListFromFireStore(itemsList)
+                when(activity) {
+                    is CartListActivity -> {
+                        activity.successItemsListFromFireStore(itemsList)
+                    }
+                    is CheckoutActivity -> {
+                        activity.successItemsListFromFireStore(itemsList)
+                    }
+                }
             }
             .addOnFailureListener { e ->
-                activity.hideProgressDialog()
+                when(activity) {
+                    is CartListActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                    is CheckoutActivity -> {
+                        activity.hideProgressDialog()
+                    }
+                }
 
                 Log.e(
                     activity.javaClass.simpleName,
@@ -628,6 +645,23 @@ class FirestoreClass {
                 Log.e(
                     activity.javaClass.simpleName,
                     "Error while deleting the address",
+                    e
+                )
+            }
+    }
+
+    fun placeOrder(activity: CheckoutActivity, order: Order) {
+        mFirestore.collection(Constants.ORDERS)
+            .document()
+            .set(order, SetOptions.merge())
+            .addOnSuccessListener {
+                activity.orderPlacedSuccess()
+            }
+            .addOnFailureListener { e->
+                activity.hideProgressDialog()
+                Log.e(
+                    activity.javaClass.simpleName,
+                    "Error while placing an order.",
                     e
                 )
             }

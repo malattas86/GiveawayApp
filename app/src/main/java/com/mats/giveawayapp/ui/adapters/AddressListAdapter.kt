@@ -6,14 +6,17 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ItemAddresLayoutBinding
 import com.mats.giveawayapp.models.Address
 import com.mats.giveawayapp.ui.activities.AddEditAddressActivity
+import com.mats.giveawayapp.ui.activities.CheckoutActivity
 import com.mats.giveawayapp.utils.Constants
 
 class AddressListAdapter(
     private val context: Context,
-    private var list: ArrayList<Address>
+    private var list: ArrayList<Address>,
+    private val selectAddress: Boolean
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     /**
      * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
@@ -28,7 +31,7 @@ class AddressListAdapter(
      * The new ViewHolder will be used to display items of the adapter using
      * [.onBindViewHolder]. Since it will be re-used to display
      * different items in the data set, it is a good idea to cache references to sub views of
-     * the View to avoid unnecessary [View.findViewById] calls.
+     * the View to avoid unnecessary [android.view.View.findViewById] calls.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to
      * an adapter position.
@@ -74,8 +77,21 @@ class AddressListAdapter(
         if (holder is MyViewHolder) {
             holder.binding.tvAddressFullName.text = model.name
             holder.binding.tvAddressType.text = model.addressType
-            holder.binding.tvAddressDetails.text = "${model.address}, ${model.zipCode}"
+            holder.binding.tvAddressDetails.text =
+                context.resources.getString(
+                    R.string.display_address,
+                    model.address,
+                    model.zipCode
+                )
             holder.binding.tvMobileNumber.text = model.mobileNumber
+
+            if (selectAddress) {
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(context, CheckoutActivity::class.java)
+                    intent.putExtra(Constants.EXTRA_SELECTED_ADDRESS, model)
+                    context.startActivity(intent)
+                }
+            }
         }
     }
 
@@ -88,10 +104,10 @@ class AddressListAdapter(
         return list.size
     }
 
-    fun notifyEditItem(position: Int) {
+    fun notifyEditItem(activity: Activity, position: Int) {
         val intent = Intent(context, AddEditAddressActivity::class.java)
         intent.putExtra(Constants.EXTRA_ADDRESS_DETAILS, list[position])
-        context.startActivity(intent)
+        activity.startActivityForResult(intent, Constants.ADD_ADDRESS_REQUEST_CODE)
         notifyItemChanged(position)
     }
 
