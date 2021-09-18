@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize">
 
-                <TextView
+                <com.mats.giveawayapp.utils.MSPTextViewBold
                     android:id="@+id/tv_title"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -54,20 +54,16 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/settings_user_image_marginTop">
 
-            <ImageView
+            <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/iv_user_photo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/settings_user_picture_margin"
-                android:contentDescription="@string/content_description"
-                android:scaleType="fitXY"
-                android:background="@color/colorBorder"
-                android:src="@drawable/user" />
+                android:src="@drawable/user"
+                android:tint="@android:color/white"/>
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/user_image_background"/>
+                android:layout_height="match_parent" />
         </FrameLayout>
 
         <com.mats.giveawayapp.utils.MSPTextView
@@ -77,6 +73,7 @@
             android:layout_below="@+id/fl_header_bg"
             android:layout_alignParentEnd="true"
             android:layout_margin="16dp"
+            android:visibility="gone"
             android:background="@drawable/item_grey_border_background"
             android:foreground="?attr/selectableItemBackgroundBorderless"
             android:paddingStart="@dimen/settings_edit_label_marginStartEnd"
@@ -85,7 +82,8 @@
             android:paddingBottom="@dimen/settings_edit_label_marginTopBottom"
             android:text="@string/lbl_edit"
             android:textColor="@color/colorSecondaryText"
-            android:textSize="@dimen/settings_edit_label_textSize"/>
+            android:textSize="@dimen/settings_edit_label_textSize"
+            tools:visibility="visible"/>
 
         <com.mats.giveawayapp.utils.MSPTextViewBold
             android:id="@+id/tv_name"
@@ -136,10 +134,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_mobile_number"
-            android:layout_margin="@dimen/settings_address_margin"
+            android:layout_marginStart="@dimen/settings_address_margin"
+            android:layout_marginTop="@dimen/settings_address_margin"
+            android:layout_marginEnd="@dimen/settings_address_margin"
+            android:layout_marginBottom="@dimen/settings_address_margin"
             android:background="@drawable/item_grey_border_background"
             android:orientation="horizontal"
-            android:padding="@dimen/settings_address_padding">
+            android:padding="@dimen/settings_address_padding"
+            android:visibility="gone"
+            tools:visibility="visible">
 
             <com.mats.giveawayapp.utils.MSPTextView
                 android:layout_width="0dp"
@@ -154,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="@string/content_description"
-                android:src="@drawable/ic_vector_chevron_right"/>
+                android:src="@drawable/ic_vector_chevron_right" />
         </LinearLayout>
 
         <com.mats.giveawayapp.utils.MSPButton
@@ -174,7 +177,9 @@
             android:paddingBottom="@dimen/btn_padding"
             android:text="@string/btn_lbl_logout"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/btn_textSize"/>
+            android:textSize="@dimen/btn_textSize"
+            android:visibility="gone"
+            tools:visibility="visible"/>
 
     </RelativeLayout>
 </ScrollView>

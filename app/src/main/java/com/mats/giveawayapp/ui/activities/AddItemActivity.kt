@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,7 +18,7 @@ import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.ui.adapters.ItemDetailsImagesAdapter
 import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.Constants.toArrayUri
-import com.mats.giveawayapp.utils.GlideLoader
+import com.squareup.picasso.Picasso
 import java.io.IOException
 
 
@@ -28,9 +27,9 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
     private lateinit var binding: ActivityAddItemBinding
     private var mItemId: String = ""
 
-    private var mSelectedImageFileURI: Uri? = null
     private var mSelectedImagesFileURI = ArrayList<Uri?>()
-    private var mItemImageURL: String = ""
+    //private var mItemImageURL: String = ""
+    private var mOldImages = ArrayList<String?>()
     private var mItemImagesURL = ArrayList<String?>()
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) {
@@ -49,7 +48,7 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
             for (imageURI in imagesURI) {
                 if (!mSelectedImagesFileURI.contains(imageURI)) {
 
-                    mSelectedImagesFileURI.addAll(imagesURI)
+                    mSelectedImagesFileURI.add(imageURI)
                 }
             }
 
@@ -78,15 +77,15 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
 
             val adapterItems = ItemDetailsImagesAdapter(this, images)
             binding.vpItemImages.adapter = adapterItems
-            TabLayoutMediator(binding.tabLayout, binding.vpItemImages) { tab, position ->
+            TabLayoutMediator(binding.tabLayout, binding.vpItemImages) { _,_ ->//tab, position ->
 
             }.attach()
 
         } else {
             binding.ivItemImage.visibility = View.VISIBLE
             binding.vpItemImages.visibility = View.GONE
-            GlideLoader(this)
-                .loadUserPicture(images[0]!!, binding.ivItemImage)
+            Picasso.get().load(images[0]!!)
+                .into(binding.ivItemImage)
         }
     }
 
@@ -123,10 +122,10 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
     }
 
     fun imageUploadSuccess(imagesURL: ArrayList<String>) {
-        mItemImageURL = imagesURL[0]
-        for (imageURL in imagesURL) {
-            mItemImagesURL.add(imageURL)
-        }
+        //mItemImageURL = imagesURL[0]
+        mItemImagesURL.addAll(mOldImages)
+        mItemImagesURL.addAll(imagesURL)
+
         uploadItemDetails()
     }
 
@@ -150,20 +149,26 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
     {
         val username = this.getSharedPreferences(Constants.MY_PREFERENCES, Context.MODE_PRIVATE)
                             .getString(Constants.LOGGED_IN_USERNAME, "")!!
+        val userEmail = this.getSharedPreferences(Constants.MY_PREFERENCES, Context.MODE_PRIVATE)
+            .getString(Constants.LOGGED_IN_EMAIL, "")!!
+        val userImage = this.getSharedPreferences(Constants.MY_PREFERENCES, Context.MODE_PRIVATE)
+            .getString(Constants.LOGGED_IN_PROFILE_IMAGE, "")!!
+
 
         val item = Item(
-            FirestoreClass().getCurrentUserID(),
-            username,
-            binding.etItemTitle.text.toString().trim { it <= ' '},
-            binding.etItemDescription.text.toString().trim { it <= ' '},
-            binding.etItemPrice.text.toString().trim { it <= ' '},
-            binding.etItemQuantity.text.toString().trim { it <= ' '},
-            mItemImagesURL
-            //mItemImageURL,
-
+            user_id = FirestoreClass().getCurrentUserID(),
+            user_email = userEmail,
+            profile_username = username,
+            profile_image = userImage,
+            title = binding.etItemTitle.text.toString().trim { it <= ' '},
+            description = binding.etItemDescription.text.toString().trim { it <= ' '},
+            price = binding.etItemPrice.text.toString().trim { it <= ' '},
+            stock_quantity = binding.etItemQuantity.text.toString().trim { it <= ' '},
+            images = mItemImagesURL,
+            item_id = mItemId
         )
 
-        FirestoreClass().uploadItemDetails(this, item, mItemImagesURL)
+        FirestoreClass().uploadItemDetails(this, item)
     }
 
     private fun onClickSubmit() {
@@ -247,6 +252,7 @@ class AddItemActivity : BaseActivity(), View.OnClickListener {
             etItemDescription.setText(item.description)
             etItemQuantity.setText(item.stock_quantity)
         }
+        mOldImages.addAll(item.images)
     }
 
     private fun getItemDetails() {

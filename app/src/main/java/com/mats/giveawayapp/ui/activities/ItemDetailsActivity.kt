@@ -2,10 +2,6 @@ package com.mats.giveawayapp.ui.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.google.android.material.tabs.TabLayoutMediator
 import com.mats.giveawayapp.R
@@ -16,6 +12,12 @@ import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.ui.adapters.ItemDetailsImagesAdapter
 import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.Constants.toArrayUri
+import com.squareup.picasso.Picasso
+
+import com.mats.giveawayapp.models.AlertDialogItem
+import android.view.*
+import android.widget.*
+
 
 class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
 
@@ -23,6 +25,7 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
 
     private var mItemId: String = ""
     private lateinit var mItemDetails: Item
+    private lateinit var mItemOwnerId: String
 
     private var mImagesList: ArrayList<String?> = ArrayList()
 
@@ -32,31 +35,43 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
         setContentView(binding.root)
 
         setupActionBar()
+        initUi()
+        //getItemDetails()
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getItemDetails()
+    }
+
+    private fun initUi() {
         if (intent.hasExtra(Constants.EXTRA_ITEM_ID)) {
             mItemId = intent.getStringExtra(Constants.EXTRA_ITEM_ID)!!
         }
-        var itemOwnerId = ""
-        if (intent.hasExtra(Constants.EXTRA_iTEM_OWNER_ID)) {
-            itemOwnerId =
-                intent.getStringExtra(Constants.EXTRA_iTEM_OWNER_ID)!!
+
+        if (intent.hasExtra(Constants.EXTRA_ITEM_OWNER_ID)) {
+            mItemOwnerId =
+                intent.getStringExtra(Constants.EXTRA_ITEM_OWNER_ID)!!
         }
-        if (FirestoreClass().getCurrentUserID() == itemOwnerId) {
+        if (FirestoreClass().getCurrentUserID() == mItemOwnerId) {
             binding.btnAddToCart.visibility = View.GONE
-            binding.btnAddToCart.visibility = View.GONE
+            binding.llUserDetail.visibility = View.GONE
         } else {
             binding.btnAddToCart.visibility = View.VISIBLE
+            binding.llUserDetail.visibility = View.VISIBLE
         }
-        getItemDetails()
 
         binding.btnAddToCart.setOnClickListener(this)
         binding.btnGoToCart.setOnClickListener(this)
-
+        binding.llUserDetail.setOnClickListener(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val inflater = menuInflater
         inflater.inflate(R.menu.edit_item_menu, menu)
+        val menuItem: MenuItem = menu?.findItem(R.id.action_edit_item)!!
+        menuItem.isVisible = FirestoreClass().getCurrentUserID() == mItemOwnerId
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -88,7 +103,12 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
 
     fun itemDetailsSuccess(item: Item) {
         mItemDetails = item
-        mImagesList.addAll(item.images)
+        for (image in item.images) {
+            if (!mImagesList.contains(image)) {
+                mImagesList.add(image)
+            }
+        }
+        //mImagesList.addAll(item.images)
         val itemDetailsImagesAdapter =
             ItemDetailsImagesAdapter(this, toArrayUri(mImagesList))
         binding.vpItemDetailImage.adapter = itemDetailsImagesAdapter
@@ -102,6 +122,18 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
                 binding.tvItemDetailsPrice.resources.getString(R.string.display_price, item.price)
             tvItemDetailsDescription.text = item.description
             tvItemDetailsAvailableQuantity.text = item.stock_quantity
+            tvUsername.text = item.profile_username
+            if (item.images.size > 1){
+                binding.tabLayout.visibility = View.VISIBLE
+            }
+            else {
+                binding.tabLayout.visibility = View.GONE
+            }
+            for (image in item.images)
+            {
+                Picasso.get().load(image)
+                    .into(binding.ivImageProfile)
+            }
         }
 
         if (item.stock_quantity?.toInt() == 0) {
@@ -141,9 +173,23 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
                 binding.btnGoToCart -> {
                     onClickGoToCart()
                 }
+
+                binding.llUserDetail -> {
+                    onClickUserDetails()
+                }
             }
         }
     }
+
+    private fun onClickUserDetails() {
+
+        val items = arrayOf(
+            AlertDialogItem("Send a Message", R.drawable.ic_vector_chat),
+            AlertDialogItem("Visit the Profile", R.drawable.ic_vector_person_outline),
+        )
+        com.mats.giveawayapp.utils.AlertDialog(this, items, mItemDetails.user_id!!).build()
+    }
+
 
     private fun onClickAddToCart() {
         val cartItem = CartItem(

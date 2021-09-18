@@ -7,22 +7,116 @@
     android:background="@color/colorWhite"
     tools:context=".ui.fragments.DashboardFragment">
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_dashboard"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@drawable/app_gradient_color_background"
+        app:popupTheme="@style/Theme.GiveawayApp.PopupOverlay"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginTop="8dp"
+                app:cardBackgroundColor="@color/colorPrimary"
+                app:cardCornerRadius="50dp"
+                app:layout_constraintEnd_toEndOf="@+id/action_cart"
+                app:layout_constraintTop_toTopOf="@+id/action_cart">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="11"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/tv_dashboard"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:text="@string/title_dashboard"
+                android:textColor="@android:color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="center_vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/action_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:src="@drawable/ic_vector_settings_white"
+                android:tint="@android:color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/action_cart"
+                android:layout_width="30dp"
+                android:layout_height="0dp"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:contentDescription="@string/content_description"
+                android:foreground="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_vector_shopping_cart"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/action_settings"
+                app:layout_constraintTop_toTopOf="parent"
+                app:tint="@android:color/white" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <EditText
+        android:id="@+id/et_searchItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="6dp"
+        android:hint="Search users here..."
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar_dashboard"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_dashboard_items"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/et_searchItem" />
 
     <TextView
         android:id="@+id/tv_no_items_found"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="@string/no_dashboard_item_found"
         android:textAlignment="center"
@@ -30,6 +124,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/et_searchItem" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

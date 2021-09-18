@@ -67,6 +67,7 @@
                 android:labelFor="@+id/vp_item_detail_image"
                 android:layout_marginTop="-50dp"
                 android:background="@android:color/transparent"
+                android:visibility="gone"
                 app:tabIndicatorHeight="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -157,6 +158,33 @@
                     android:textSize="@dimen/item_details_stock_quantity_textSize"
                     android:textStyle="bold"
                     tools:text="5"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_user_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_margin="@dimen/item_details_label_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ll_item_details_quantity">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/iv_image_profile"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginEnd="@dimen/item_details_image_profile_paddingStartEnd"/>
+
+                <com.mats.giveawayapp.utils.MSPTextViewBold
+                    android:id="@+id/tv_username"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    tools:text="Username" />
+
             </LinearLayout>
 
             <com.mats.giveawayapp.utils.MSPButton
@@ -179,7 +207,7 @@
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ll_item_details_quantity"
+                app:layout_constraintTop_toBottomOf="@+id/ll_user_detail"
                 tools:visibility="visible" />
 
             <com.mats.giveawayapp.utils.MSPButton

@@ -1,6 +1,7 @@
 package com.mats.giveawayapp.ui.activities
 
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.navigation.findNavController
@@ -17,13 +18,6 @@ class DashboardActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        supportActionBar!!.setBackgroundDrawable(
-            ContextCompat.getDrawable(
-                this,
-                R.drawable.app_gradient_color_background
-            )
-        )
-
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -32,12 +26,16 @@ class DashboardActivity : BaseActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_dashboard)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
+        /*val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
+                R.id.navigation_dashboard,
+                R.id.navigation_itemBoard,
+                R.id.navigation_chatBoard,
+                R.id.navigation_notifications
             )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
+        )*/
+
+//        setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
     }
 

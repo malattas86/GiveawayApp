@@ -12,6 +12,10 @@ class User(
     val image: String? = "",
     val mobile: Long = 0,
     val gender: String? = "",
+    val status: String? = "",
+    val facebook:String? = "",
+    val instagram:String? = "",
+    val website:String? = "",
     val profileCompleted: Int = 0
         ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -22,6 +26,10 @@ class User(
         parcel.readString(),
         parcel.readString(),
         parcel.readLong(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
         parcel.readString(),
         parcel.readInt()
     ) {
@@ -36,6 +44,10 @@ class User(
         parcel.writeString(image)
         parcel.writeLong(mobile)
         parcel.writeString(gender)
+        parcel.writeString(status)
+        parcel.writeString(facebook)
+        parcel.writeString(instagram)
+        parcel.writeString(website)
         parcel.writeInt(profileCompleted)
     }
 

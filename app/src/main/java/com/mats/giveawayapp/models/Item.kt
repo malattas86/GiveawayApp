@@ -5,7 +5,9 @@ import android.os.Parcelable
 
 data class Item(
     val user_id: String? = "",
-    val user_name: String? = "",
+    val user_email: String? = "",
+    val profile_username: String? = "",
+    val profile_image: String? = "",
     val title: String? = "",
     val description: String? = "",
     val price: String? = "",
@@ -20,6 +22,8 @@ data class Item(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readString(),
+        parcel.readString(),
         parcel.createStringArrayList() as ArrayList<String?>,
         parcel.readString()
     ) {
@@ -27,7 +31,9 @@ data class Item(
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(user_id)
-        parcel.writeString(user_name)
+        parcel.writeString(user_email)
+        parcel.writeString(profile_username)
+        parcel.writeString(profile_image)
         parcel.writeString(title)
         parcel.writeString(description)
         parcel.writeString(price)

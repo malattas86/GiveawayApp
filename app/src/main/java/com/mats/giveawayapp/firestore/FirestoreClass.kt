@@ -17,6 +17,7 @@ import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
 import com.mats.giveawayapp.utils.Constants
+import javax.annotation.Nullable
 
 class FirestoreClass {
 
@@ -85,12 +86,12 @@ class FirestoreClass {
             }
     }
 
-    fun getUserDetails(activity: Activity) {
+    fun getUserDetails(activity: Activity, userID: String = getCurrentUserID()) {
 
         // Here we pass the collection name from which we wants the data.
         mFirestore.collection(Constants.USERS)
             // The document id to get the Fields of user
-            .document(getCurrentUserID())
+            .document(userID)
             .get()
             .addOnSuccessListener { document ->
 
@@ -105,9 +106,16 @@ class FirestoreClass {
                 val editor: SharedPreferences.Editor = sharedPreferences.edit()
                 // Key:Value logged_in_username: firstname lastname
                 editor.putString(
-                    Constants.LOGGED_IN_USERNAME,
+                    Constants.LOGGED_IN_EMAIL,
                     "${user.email}"
-                    //"${user.firsName} ${user.lastName}"
+                )
+                editor.putString(
+                    Constants.LOGGED_IN_USERNAME,
+                    "${user.userName}"
+                )
+                editor.putString(
+                    Constants.LOGGED_IN_PROFILE_IMAGE,
+                    "${user.image}"
                 )
                 editor.apply()
 
@@ -213,9 +221,20 @@ class FirestoreClass {
         }
     }
 
-    fun uploadItemDetails(activity: AddItemActivity, itemInfo: Item, urlStrings: ArrayList<String?>) {
+    fun uploadItemDetails(activity: AddItemActivity, itemInfo: Item) {
+        var id = ""
+        if (itemInfo.item_id == "")
+        {
+            id = mFirestore
+                .collection(Constants.ITEMS)
+                .document().id
+            itemInfo.item_id = id
+        }
+        else {
+            id = itemInfo.item_id!!
+        }
         mFirestore.collection(Constants.ITEMS)
-            .document()
+            .document(id)
             .set(itemInfo, SetOptions.merge())
             .addOnSuccessListener {
                 // Here call a function of base activity for transferring the result to it
@@ -229,29 +248,6 @@ class FirestoreClass {
                     e
                 )
             }
-        val hashMap = HashMap<String, Any>()
-        for (i in urlStrings) {
-            hashMap["ImgLink_"+1] = i!!
-        }
-
-        /*mFirestore.collection(Constants.ITEMS)
-            .document()
-            .set(hashMap)*/
-
-
-        /*mFireReference.reference.child("user").push().setValue(hashMap)
-            .addOnSuccessListener { e->
-                Log.i(
-                    activity.javaClass.simpleName,
-                    hashMap.toString())
-            }
-            .addOnFailureListener { e->
-                Log.e(
-                activity.javaClass.simpleName,
-                "Error while uploading the item details.",
-                e
-                )
-            }*/
     }
 
     fun getDashboardItemsList(fragment: DashboardFragment) {
@@ -562,11 +558,13 @@ class FirestoreClass {
                     )
                 }
             }
-            .addOnFailureListener { e->
-                context.hideProgressDialog()
-                Log.e(context.javaClass.simpleName,
-                "Error while Check if username exist.",
-                e)
+            .addOnFailureListener { e ->
+                context.registerDetails()
+                Log.e(
+                    context.javaClass.simpleName,
+                    "Error while Check if username exist.",
+                    e
+                )
             }
     }
 

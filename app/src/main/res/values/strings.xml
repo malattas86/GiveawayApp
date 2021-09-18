@@ -58,12 +58,14 @@
     <string name="title_activity_dashboard">DashboardActivity</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_item">Item</string>
+    <string name="title_chat">Chat</string>
     <string name="title_notifications">Notifications</string>
 
     <string name="please_click_back_again_to_exit">Please click back again to exit.</string>
     <string name="action_settings">Settings</string>
 
     <string name="title_settings">Settings</string>
+    <string name="user_profile">Profile User</string>
     <string name="lbl_edit">Edit</string>
     <string name="lbl_addresses">Addresses</string>
     <string name="btn_lbl_logout">Logout</string>
@@ -181,5 +183,8 @@
     <string name="lbl_payment_mode">Payment Mode</string>
     <string name="lbl_cash_on_delivery">Cash On Delivery</string>
     <string name="btn_lbl_place_order">PLACE ORDER</string>
+    <string name="hint_write_text_message">write message here...</string>
+    <string name="user_name_profile">user name</string>
+    <string name="err_msg_enter_message">Please enter Message</string>
 
 </resources>

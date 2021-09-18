@@ -3,19 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/navigation_dashboard">
 
     <fragment
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_dashboard"
         android:name="com.mats.giveawayapp.ui.fragments.DashboardFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_itemBoard"
         android:name="com.mats.giveawayapp.ui.fragments.ItemFragment"
         android:label="@string/title_item"
         tools:layout="@layout/fragment_item" />
+
+    <fragment
+        android:id="@+id/navigation_chatBoard"
+        android:name="com.mats.giveawayapp.ui.fragments.ChatFragment"
+        android:label="@string/title_chat"
+        tools:layout="@layout/fragment_chat" />
 
     <fragment
         android:id="@+id/navigation_notifications"

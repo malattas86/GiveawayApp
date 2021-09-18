@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.databinding.ItemImagesDetailsLayoutBinding
 import com.mats.giveawayapp.utils.GlideLoader
+import com.squareup.picasso.Picasso
 
 open class ItemDetailsImagesAdapter(
     var context: Context,
@@ -70,8 +71,8 @@ open class ItemDetailsImagesAdapter(
         val model = imagesList[position]
 
         if (holder is MyViewHolder) {
-            GlideLoader(context).loadItemPicture(model!!,
-                holder.binding.ivItemDetailsImages)
+            Picasso.get().load(model!!)
+                .into(holder.binding.ivItemDetailsImages)
 
             holder.binding.clImagesDetails.setOnLongClickListener{
                     holder.binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE

@@ -16,6 +16,7 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mUserDetails: User
 
     private lateinit var binding: ActivitySettingsBinding
+    private var mUserID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +24,31 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
         setContentView(binding.root)
 
         setupActionBar()
+
+        initUI()
+    }
+
+    private fun initUI() {
+        if (intent.hasExtra(Constants.EXTRA_ITEM_OWNER_ID)) {
+            mUserID =
+                intent.getStringExtra(Constants.EXTRA_ITEM_OWNER_ID)!!
+        }
+        if (intent.hasExtra(Constants.EXTRA_LOGGED_IN_ID)) {
+            mUserID =
+                intent.getStringExtra(Constants.EXTRA_LOGGED_IN_ID)!!
+        }
+
+        if (FirestoreClass().getCurrentUserID() == mUserID) {
+            binding.llAddress.visibility = View.VISIBLE
+            binding.btnLogout.visibility = View.VISIBLE
+            binding.tvEdit.visibility = View.VISIBLE
+            binding.tvTitle.text = resources.getString(R.string.title_settings)
+        } else {
+            binding.llAddress.visibility = View.GONE
+            binding.btnLogout.visibility = View.GONE
+            binding.tvEdit.visibility = View.GONE
+            binding.tvTitle.text = resources.getString(R.string.user_profile)
+        }
 
         binding.btnLogout.setOnClickListener(this)
         binding.tvEdit.setOnClickListener(this)
@@ -44,26 +70,29 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
 
     private fun getUserDetails() {
         showProgressDialog(resources.getString(R.string.please_wait))
-        FirestoreClass().getUserDetails(this)
+        FirestoreClass().getUserDetails(this, mUserID)
     }
 
     fun userDetailsSuccess(user: User) {
 
         mUserDetails = user
-
         hideProgressDialog()
 
-        GlideLoader(this).loadUserPicture(user.image!!, binding.ivUserPhoto)
-        "${user.firstName} ${user.lastName}".also { binding.tvName.text = it }
-        user.gender.also { binding.tvGender.text = it }
-        user.email.also { binding.tvEmail.text = it }
-        "${user.mobile}".also { binding.tvMobileNumber.text = it }
+        GlideLoader(this).loadUserPicture(mUserDetails.image!!, binding.ivUserPhoto)
+        "${mUserDetails.firstName} ${mUserDetails.lastName}".also {
+            binding.tvName.text = it
+        }
+        mUserDetails.gender.also { binding.tvGender.text = it }
+        mUserDetails.email.also { binding.tvEmail.text = it }
+        "${mUserDetails.mobile}".also { binding.tvMobileNumber.text = it }
+
     }
 
     override fun onResume() {
         super.onResume()
         if (FirebaseAuth.getInstance().currentUser != null)
             getUserDetails()
+
         else {
             startActivity(Intent(this, LoginActivity::class.java))
         }

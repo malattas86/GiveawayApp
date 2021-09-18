@@ -20,7 +20,9 @@ import com.google.firebase.auth.FirebaseUser
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityRegisterBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
+import com.mats.giveawayapp.firestore.FirestoreRefClass
 import com.mats.giveawayapp.models.User
+import com.mats.giveawayapp.models.User2
 import com.mats.giveawayapp.pwd_strength.PasswordStrengthCalculator
 import com.mats.giveawayapp.utils.Constants
 
@@ -220,9 +222,12 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
                             val user = User(
                                 firebaseUser.uid,
                                 userName = binding.etUsername.text.toString().trim { it <= ' '},
-                                email = binding.etRegisterEmail.text.toString().trim { it <= ' '}
+                                email = binding.etRegisterEmail.text.toString().trim { it <= ' '},
+                                status = "offline",
+                                facebook = "https://m.facebook.com",
+                                instagram = "https://m.instgram.com",
+                                website = "https://m.google.com"
                             )
-
                             FirestoreClass().registerUser(this, user)
                         }
 
@@ -237,6 +242,20 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
     fun userRegistrationSuccess() {
         // Hide the progress dialog
         hideProgressDialog()
+
+
+        val user2 = User2(
+            uid = FirestoreClass().getCurrentUserID(),
+            username = binding.etUsername.text.toString().trim { it <= ' '},
+            profileImage = "",
+            coverImage = "",
+            status = "offline",
+            search = FirestoreClass().getCurrentUserID().lowercase(),
+            facebook = "https://m.facebook.com",
+            instagram = "https://m.instgram.com",
+            website = "https://m.google.com",
+        )
+        FirestoreRefClass().registerUser(this, user2)
 
         Toast.makeText(
             this,

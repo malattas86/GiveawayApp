@@ -18,20 +18,16 @@ import com.mats.giveawayapp.ui.activities.SettingsActivity
 import com.mats.giveawayapp.ui.adapters.DashboardItemListAdapter
 import com.mats.giveawayapp.utils.Constants
 
-class DashboardFragment : BaseFragment() {
+class DashboardFragment : BaseFragment(), View.OnClickListener {
 
     //private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentDashboardBinding? = null
 
+    private lateinit var mItem: Item
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // If we want to use the option menu in fragment we need to add it.
-        setHasOptionsMenu(true)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,40 +48,12 @@ class DashboardFragment : BaseFragment() {
     }
 
     override fun onResume() {
+        binding.actionCart.setOnClickListener(this)
+        binding.actionSettings.setOnClickListener(this)
         super.onResume()
         getItemsListFromFireStore()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.dashboard_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-            R.id.action_settings -> {
-                if (FirebaseAuth.getInstance().currentUser != null)
-                {
-                    startActivity(Intent(activity, SettingsActivity::class.java))
-                }
-                else {
-                    startActivity(Intent(activity, LoginActivity::class.java))
-                }
-            }
-
-            R.id.action_cart -> {
-                if (FirebaseAuth.getInstance().currentUser != null)
-                {
-                    startActivity(Intent(activity, CartListActivity::class.java))
-                }
-                else {
-                    startActivity(Intent(activity, LoginActivity::class.java))
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     fun successItemsListFromFireStore(dashboardItemList: ArrayList<Item>) {
         hideProgressDialog()
@@ -102,9 +70,10 @@ class DashboardFragment : BaseFragment() {
 
             adapterDashboardItems.setOnClickListener(object: DashboardItemListAdapter.OnClickListener{
                 override fun onClick(position: Int, item: Item) {
+                    mItem = item
                     val intent = Intent(context, ItemDetailsActivity::class.java)
                     intent.putExtra(Constants.EXTRA_ITEM_ID, item.item_id)
-                    intent.putExtra(Constants.EXTRA_iTEM_OWNER_ID, item.user_id)
+                    intent.putExtra(Constants.EXTRA_ITEM_OWNER_ID, item.user_id)
                     startActivity(intent)
                 }
 
@@ -118,5 +87,34 @@ class DashboardFragment : BaseFragment() {
     private fun getItemsListFromFireStore() {
         showProgressDialog(resources.getString(R.string.please_wait))
         FirestoreClass().getDashboardItemsList(this)
+    }
+
+    override fun onClick(v: View?) {
+        when(v) {
+            binding.actionCart -> {
+                if (FirebaseAuth.getInstance().currentUser != null)
+                {
+                    startActivity(Intent(activity, CartListActivity::class.java))
+                }
+                else {
+                    startActivity(Intent(activity, LoginActivity::class.java))
+                }
+            }
+
+            binding.actionSettings -> {
+                if (FirebaseAuth.getInstance().currentUser != null)
+                {
+                    val intent = Intent(activity, SettingsActivity::class.java)
+                    intent.putExtra(
+                        Constants.EXTRA_LOGGED_IN_ID,
+                        FirestoreClass().getCurrentUserID()
+                    )
+                    startActivity(intent)
+                }
+                else {
+                    startActivity(Intent(activity, LoginActivity::class.java))
+                }
+            }
+        }
     }
 }

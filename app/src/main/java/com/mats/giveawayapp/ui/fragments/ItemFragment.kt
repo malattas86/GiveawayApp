@@ -24,12 +24,6 @@ class ItemFragment : BaseFragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // If we want to use the option menu in fragment we need to add it.
-        setHasOptionsMenu(true)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,6 +33,16 @@ class ItemFragment : BaseFragment() {
 
         _binding = FragmentItemBinding.inflate(inflater, container, false)
         val root: View = binding.root
+
+        binding.actionAddItem.setOnClickListener {
+            if (FirebaseAuth.getInstance().currentUser != null)
+            {
+                startActivity(Intent(activity, AddItemActivity::class.java))
+            }
+            else {
+                startActivity(Intent(activity, LoginActivity::class.java))
+            }
+        }
 
         return root
     }
@@ -51,28 +55,6 @@ class ItemFragment : BaseFragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.add_item_menu, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        when (item.itemId) {
-            R.id.action_add_item -> {
-                if (FirebaseAuth.getInstance().currentUser != null)
-                {
-                    startActivity(Intent(activity, AddItemActivity::class.java))
-                }
-                else {
-                    startActivity(Intent(activity, LoginActivity::class.java))
-                }
-
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     fun successItemsListFromFireStore(itemList: ArrayList<Item>) {

@@ -1,15 +1,12 @@
 package com.mats.giveawayapp.ui.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityUserProfileBinding
@@ -17,16 +14,47 @@ import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.User
 import com.mats.giveawayapp.utils.Constants
 import com.mats.giveawayapp.utils.GlideLoader
+import com.squareup.picasso.Picasso
 import java.io.IOException
 
-class UserProfileActivity : BaseActivity() {
+class UserProfileActivity : BaseActivity() , View.OnClickListener{
 
     private lateinit var mUserDetails: User
-    private var mSelectedImageFileUri: Uri? = null
-
+    private var mSelectedImagesFileURI = ArrayList<Uri?>()
     private var mUserProfileImageURL: String = ""
-
     private lateinit var binding:ActivityUserProfileBinding
+
+    private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            pickImages.launch("image/*")
+        } else {
+            Toast.makeText(
+                this,
+                resources.getString(R.string.read_storage_permission_denied),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+    private val pickImages = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {imagesURI ->
+            mSelectedImagesFileURI.add(imagesURI)
+
+            try {
+                binding.ivUserPhoto.setImageResource(R.drawable.ic_vector_edit)
+                Picasso.get().load(mSelectedImagesFileURI[0])
+                    .placeholder(R.drawable.ic_profile)
+                    .into(binding.ivUserPhoto)
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(
+                    this,
+                    resources.getString(R.string.image_selection_failed),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +72,9 @@ class UserProfileActivity : BaseActivity() {
         } else {
             setActionBar()
             binding.tvTitle.text = resources.getString(R.string.title_edit_profile)
-            GlideLoader(this).loadUserPicture(mUserDetails.image!!, binding.ivUserPhoto)
+            Picasso.get().load(mUserDetails.image!!)
+                .placeholder(R.drawable.ic_profile)
+                .into(binding.ivUserPhoto)
 
             binding.etFirstName.setText(mUserDetails.firstName)
             binding.etLastName.setText(mUserDetails.lastName)
@@ -63,6 +93,9 @@ class UserProfileActivity : BaseActivity() {
         binding.etEmail.setText(mUserDetails.email)
         binding.etUsername.isEnabled = false
         binding.etUsername.setText(mUserDetails.userName)
+
+        binding.ivUserPhoto.setOnClickListener(this)
+        binding.btnSubmit.setOnClickListener(this)
     }
 
     private fun setActionBar() {
@@ -77,73 +110,14 @@ class UserProfileActivity : BaseActivity() {
         binding.toolbarUserProfileActivity.setNavigationOnClickListener { onBackPressed() }
     }
 
-    fun onClickChooseImage(@Suppress("UNUSED_PARAMETER")view: View) {
-        // Here we will check if the permission is already allowed or we need to request for it.
-        // First of all we will check the READ_EXTERNAL_STORAGE permission and if it is not allowed we
+    private fun onClickChooseImage() {
         if (ContextCompat.checkSelfPermission(
                 this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
             == PackageManager.PERMISSION_GRANTED) {
-            Constants.showImageChooser(this)
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                Constants.READ_STORAGE_PERMISSION_CODE)
+            pickImages.launch("image/*")
         }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == Constants.READ_STORAGE_PERMISSION_CODE) {
-            //If permission is granted
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                //showErrorSnackBar("The storage permission is granted.", false)
-                Constants.showImageChooser(this)
-            } else {
-                // Displaying another toast if permission is not granted
-                Toast.makeText(
-                    this,
-                    resources.getString(R.string.read_storage_permission_denied),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == Constants.PICK_IMAGE_REQUEST_CODE) {
-                if (data != null) {
-                    try {
-                        // The uri of selected image from phone storage.
-                        mSelectedImageFileUri = data.data!!
-                        Toast.makeText(
-                            this,
-                            mSelectedImageFileUri.toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        //binding.ivUserPhoto.setImageURI(selectedImageFileUri)
-                        GlideLoader(this)
-                            .loadUserPicture(mSelectedImageFileUri!!, binding.ivUserPhoto)
-                    } catch (e: IOException) {
-                        e.printStackTrace()
-                        Toast.makeText(
-                            this,
-                            resources.getString(R.string.image_selection_failed),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-        } else if (resultCode == Activity.RESULT_CANCELED) {
-            // A log is printed when user close or cancel the image selection.
-            Log.e("Request Cancelled", "Image selection cancelled")
+        else {
+            requestPermission.launch(android.Manifest.permission.READ_EXTERNAL_STORAGE)
         }
     }
 
@@ -216,22 +190,35 @@ class UserProfileActivity : BaseActivity() {
         FirestoreClass().updateUserProfileData(this, userHashMap)
     }
 
-    fun onClickSave(@Suppress("UNUSED_PARAMETER")view: View) {
+    private fun onClickSave() {
 
         if (validateUserProfileDetails()) {
 
             showProgressDialog(resources.getString(R.string.please_wait))
 
-            if (mSelectedImageFileUri != null)
+            if (mSelectedImagesFileURI[0] != null)
             {
-                /*FirestoreClass().uploadImageToCloudStorage(this, mSelectedImageFileUri,
-                Constants.USER_PROFILE_IMAGE)*/
+                FirestoreClass().uploadImageToCloudStorage(this, mSelectedImagesFileURI,
+                Constants.USER_PROFILE_IMAGE)
             } else {
                 updateUserProfileDetails()
             }
             //startActivity(Intent(this, DashboardActivity::class.java))
             onBackPressed()
             finish()
+        }
+    }
+
+    override fun onClick(v: View?) {
+        if (v != null) {
+            when (v) {
+                binding.btnSubmit -> {
+                    onClickSave()
+                }
+                binding.ivUserPhoto -> {
+                    onClickChooseImage()
+                }
+            }
         }
     }
 }
