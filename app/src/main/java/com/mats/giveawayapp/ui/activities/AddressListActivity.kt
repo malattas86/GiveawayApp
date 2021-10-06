@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityAddressListBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -21,6 +22,7 @@ import com.mats.giveawayapp.utils.SwipeToEditCallback
 class AddressListActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddressListBinding
+    private var onlineStatus: MyApplication = MyApplication()
 
     private var mSelectAddress: Boolean = false
 
@@ -46,6 +48,16 @@ class AddressListActivity : BaseActivity() {
             binding.tvTitle.text = resources.getString(R.string.title_select_address)
 
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onlineStatus.onMoveToForeground()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
     }
 
     private fun setupActionBar() {

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 //import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -17,7 +18,8 @@ import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.fragments.DashboardFragment
 import com.mats.giveawayapp.ui.fragments.ItemFragment
 import com.mats.giveawayapp.utils.Constants
-import javax.annotation.Nullable
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class FirestoreClass {
 
@@ -27,7 +29,7 @@ class FirestoreClass {
     fun registerUser(activity: RegisterActivity, userInfo: User) {
         // The "user" is collection name. If the collection is already created then it will not
         // create the same one again.
-        userInfo.id?.let {
+        userInfo.uid?.let {
             mFirestore.collection(Constants.USERS)
                 // Document ID for users fields. Here the document it is new ID.
                 .document(it)
@@ -37,7 +39,7 @@ class FirestoreClass {
                 .addOnSuccessListener {
 
                     // Here call a function of base activity for transferring the result to it.
-                    activity.userRegistrationSuccess()
+                    activity.userRegistrationSuccess(userInfo)
                 }
                 .addOnFailureListener { e ->
                     activity.hideProgressDialog()
@@ -111,11 +113,11 @@ class FirestoreClass {
                 )
                 editor.putString(
                     Constants.LOGGED_IN_USERNAME,
-                    "${user.userName}"
+                    "${user.username}"
                 )
                 editor.putString(
                     Constants.LOGGED_IN_PROFILE_IMAGE,
-                    "${user.image}"
+                    "${user.profileImage}"
                 )
                 editor.apply()
 
@@ -663,5 +665,16 @@ class FirestoreClass {
                     e
                 )
             }
+    }
+
+    fun updateImageArray(activity: AddItemActivity, itemID: String, imagesURL: ArrayList<String>) {
+        val map = hashMapOf<String, ArrayList<String>>()
+        map.put("images", imagesURL)
+        mFirestore
+            .collection(Constants.ITEMS)
+            .document(itemID)
+            .update("images",FieldValue.arrayUnion(map))
+            //    .trim{it <= '['}.trim { it <= ']' }
+            //    .split(',')))
     }
 }

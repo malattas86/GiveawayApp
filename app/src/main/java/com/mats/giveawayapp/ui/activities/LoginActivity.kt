@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
-import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityLoginBinding

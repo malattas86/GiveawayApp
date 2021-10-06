@@ -7,6 +7,9 @@ import android.provider.MediaStore
 import android.webkit.MimeTypeMap
 
 object Constants {
+    const val BASE_URL = "https://fcm.googleapis.com"
+    const val SERVER_KEY = "ADD YOUR FIREBASE SERVER KEY" // get firebase server key from firebase project setting
+    const val CONTENT_TYPE = "application/json"
     // Collections in Cloud Firestore
     const val USERS: String = "users"
     const val ITEMS: String = "items"
@@ -23,8 +26,8 @@ object Constants {
     const val PICK_IMAGE_REQUEST_CODE = 1
 
     const val IMAGE: String = "image"
-    const val FIRSTNAME: String = "firstName"
-    const val LASTNAME: String = "lastName"
+    const val FIRSTNAME: String = "firstname"
+    const val LASTNAME: String = "lastname"
 
     const val MALE: String = "male"
     const val FEMALE: String = "female"
@@ -41,7 +44,9 @@ object Constants {
     const val EXTRA_ITEM_ID: String = "extra_item_id"
 
     const val EXTRA_ITEM_OWNER_ID: String = "extra_item_owner_id"
+    const val EXTRA_VISIT_USER_ID: String = "extra_visit_user_id"
     const val EXTRA_LOGGED_IN_ID: String = "extra_logged_in_id"
+    const val EXTRA_IMAGE_URL: String = "extra_image_url"
 
     const val DEFAULT_CART_QUANTITY: String = "1"
 
@@ -49,7 +54,7 @@ object Constants {
 
     const val CART_QUANTITY: String = "cart_quantity"
 
-    const val USERNAME: String = "userName"
+    const val USERNAME: String = "username"
     const val USERS_EMAILS: String = "users_emails"
 
     const val HOME: String = "Home"
@@ -61,6 +66,8 @@ object Constants {
     const val EXTRA_SELECT_ADDRESS: String = "extra_select_address"
     const val ADD_ADDRESS_REQUEST_CODE: Int = 121
     const val EXTRA_SELECTED_ADDRESS: String = "extra_selected_address"
+
+    const val EXTRA_VISIT_USERNAME: String = "visit_username"
 
     const val PWD_WEAK: String = "WEAK"
     const val PWD_MEDIUM: String = "MEDIUM"

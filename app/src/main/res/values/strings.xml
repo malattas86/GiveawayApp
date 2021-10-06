@@ -45,8 +45,8 @@
     <string name="rb_lbl_male">MALE</string>
     <string name="rb_lbl_female">FEMALE</string>
     <string name="btn_lbl_save">Save</string>
-    <string name="hint_first_name">First Name</string>
-    <string name="hint_last_name">Last Name</string>
+    <string name="hint_firstname">First Name</string>
+    <string name="hint_lastname">Last Name</string>
     <string name="hint_username">Username</string>
     <string name="hint_email">Email</string>
     <string name="hint_mobile_number">Mobile Number</string>
@@ -186,5 +186,9 @@
     <string name="hint_write_text_message">write message here...</string>
     <string name="user_name_profile">user name</string>
     <string name="err_msg_enter_message">Please enter Message</string>
+
+    <string name="type_message">Type Message</string>
+    <string name="btn_sign_up">Sign Up</string>
+    <string name="no_chat_found">No Chat found</string>
 
 </resources>

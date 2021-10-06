@@ -43,4 +43,9 @@
     <color name="medium">#FF8F00</color>
     <color name="strong">#FCCA3F</color>
     <color name="bulletproof">#00C853</color>
+
+    <color name="colorTextBackground">#f5f5f5</color>
+    <color name="colorText">#464646</color>
+    <color name="colorItemLeft">#E6E4E4</color>
+    <color name="colorItemRight">#813fd7</color>
 </resources>

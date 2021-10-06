@@ -69,21 +69,21 @@
             </FrameLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_first_name"
+                android:id="@+id/til_firstname"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/hint_first_name"
+                android:hint="@string/hint_firstname"
                 android:textColorHint="@color/colorSecondaryText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/fl_user_image">
 
                 <com.mats.giveawayapp.utils.MSPTextInputEditText
-                    android:id="@+id/et_first_name"
+                    android:id="@+id/et_firstname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -94,21 +94,21 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_last_name"
+                android:id="@+id/til_lastname"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="16dp"
-                android:hint="@string/hint_last_name"
+                android:hint="@string/hint_lastname"
                 android:textColorHint="@color/colorSecondaryText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_first_name">
+                app:layout_constraintTop_toBottomOf="@+id/til_firstname">
 
                 <com.mats.giveawayapp.utils.MSPTextInputEditText
-                    android:id="@+id/et_last_name"
+                    android:id="@+id/et_lastname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -130,7 +130,7 @@
                 android:textColorHint="@color/colorSecondaryText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/til_last_name">
+                app:layout_constraintTop_toBottomOf="@+id/til_lastname">
 
                 <com.mats.giveawayapp.utils.MSPTextInputEditText
                     android:id="@+id/et_username"

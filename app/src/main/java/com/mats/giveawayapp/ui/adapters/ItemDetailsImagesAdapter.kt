@@ -1,19 +1,20 @@
 package com.mats.giveawayapp.ui.adapters
 
 import android.content.Context
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mats.giveawayapp.databinding.ItemImagesDetailsLayoutBinding
-import com.mats.giveawayapp.utils.GlideLoader
+import com.mats.giveawayapp.interfacejava.ItemDetailsImagesListener
+import com.mats.giveawayapp.models.ItemDetailsImage
 import com.squareup.picasso.Picasso
 
 open class ItemDetailsImagesAdapter(
     var context: Context,
-    var imagesList: ArrayList<Uri?>
-) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    var itemDetailsImagesListener: ItemDetailsImagesListener,
+    private var itemDetailsImages: ArrayList<ItemDetailsImage>
+) : RecyclerView.Adapter<ItemDetailsImagesAdapter.ItemDetailsImagesViewHolder>() {
     /**
      * Called when RecyclerView needs a new [RecyclerView.ViewHolder] of the given type to represent
      * an item.
@@ -37,8 +38,8 @@ open class ItemDetailsImagesAdapter(
      * @see .getItemViewType
      * @see .onBindViewHolder
      */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MyViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemDetailsImagesViewHolder {
+        return ItemDetailsImagesViewHolder(
             ItemImagesDetailsLayoutBinding.inflate(
                 LayoutInflater.from(parent.context), parent,
                 false
@@ -67,23 +68,9 @@ open class ItemDetailsImagesAdapter(
      * item at the given position in the data set.
      * @param position The position of the item within the adapter's data set.
      */
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        val model = imagesList[position]
-
-        if (holder is MyViewHolder) {
-            Picasso.get().load(model!!)
-                .into(holder.binding.ivItemDetailsImages)
-
-            holder.binding.clImagesDetails.setOnLongClickListener{
-                    holder.binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE
-                    return@setOnLongClickListener true
-                }
-        }
+    override fun onBindViewHolder(holder: ItemDetailsImagesViewHolder, position: Int) {
+        holder.bindView(itemDetailsImages[position])
     }
-
-    /*fun markSelectedItem(index: Int) : Boolean {
-        return false
-    }*/
 
     /**
      * Returns the total number of items in the data set held by the adapter.
@@ -91,12 +78,78 @@ open class ItemDetailsImagesAdapter(
      * @return The total number of items in this adapter.
      */
     override fun getItemCount(): Int {
-        return imagesList.size
+        return itemDetailsImages.size
+    }
+
+    open fun getSelectedImages(): ArrayList<ItemDetailsImage> {
+        val selectedImages: ArrayList<ItemDetailsImage> = ArrayList()
+        for (itemDetailsImage in itemDetailsImages) {
+            if (itemDetailsImage.isSelected) {
+                selectedImages.add(itemDetailsImage)
+            }
+        }
+        return selectedImages
     }
 
     /**
      * A ViewHolder describes an item view and metadata about its place within the RecyclerView.
      */
-    class MyViewHolder(val binding: ItemImagesDetailsLayoutBinding)
-        : RecyclerView.ViewHolder(binding.root)
+    inner class ItemDetailsImagesViewHolder(val binding: ItemImagesDetailsLayoutBinding)
+        : RecyclerView.ViewHolder(binding.root) {
+        private var selectMode: Boolean = false
+
+        private fun selectModeOnClick(itemDetailsImage: ItemDetailsImage) {
+            binding.clImagesDetails.setOnClickListener {
+                if (itemDetailsImage.isSelected) {
+                    binding.ivItemDetailsImagesCheck.visibility = View.GONE
+                    itemDetailsImage.isSelected = false
+                    if (getSelectedImages().size == 0) {
+                        selectMode = false
+                        selectModeOnLongClick(itemDetailsImage)
+                        binding.clImagesDetails.setOnClickListener(null)
+                        itemDetailsImagesListener.onItemDetailsImagesAction(false)
+                    }
+                } else {
+                    binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE
+                    itemDetailsImage.isSelected = true
+                    itemDetailsImagesListener.onItemDetailsImagesAction(true)
+                }
+            }
+        }
+
+        private fun selectModeOnLongClick(itemDetailsImage: ItemDetailsImage) {
+            binding.clImagesDetails.setOnLongClickListener {
+                selectMode = true
+                if (itemDetailsImage.isSelected) {
+                    binding.ivItemDetailsImagesCheck.visibility = View.GONE
+                    itemDetailsImage.isSelected = false
+                    itemDetailsImagesListener.onItemDetailsImagesAction(false)
+                } else {
+                    binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE
+                    itemDetailsImage.isSelected = true
+                    itemDetailsImagesListener.onItemDetailsImagesAction(true)
+                }
+                selectModeOnClick(itemDetailsImage)
+                binding.clImagesDetails.setOnLongClickListener(null)
+                bindView(itemDetailsImage)
+                return@setOnLongClickListener true
+            }
+        }
+
+        fun bindView(itemDetailsImage: ItemDetailsImage) {
+            Picasso.get().load(itemDetailsImage.imageUri)
+                .fit()
+                .into(binding.ivItemDetailsImages)
+            if ( itemDetailsImage.isSelected) {
+                binding.ivItemDetailsImagesCheck.visibility = View.VISIBLE
+            } else {
+                binding.ivItemDetailsImagesCheck.visibility = View.GONE
+            }
+            if (!selectMode) {
+                selectModeOnLongClick(itemDetailsImage)
+            } else {
+                selectModeOnClick(itemDetailsImage)
+            }
+        }
+    }
 }

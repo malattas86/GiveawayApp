@@ -16,12 +16,14 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityAddEditAddressBinding
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.utils.Constants
 
 class AddEditAddressActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAddEditAddressBinding
+    private var onlineStatus: MyApplication = MyApplication()
 
     private var mAddressDetails: com.mats.giveawayapp.models.Address? = null
 
@@ -92,6 +94,16 @@ class AddEditAddressActivity : BaseActivity() {
                 binding.tilOtherDetails.visibility = View.GONE
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onlineStatus.onMoveToForeground()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
     }
 
     private fun setupActionBar() {

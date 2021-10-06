@@ -22,7 +22,7 @@
         android:layout_height="50dp"
         android:contentDescription="@string/content_description"
         android:visibility="gone"
-        android:src="@drawable/ic_vector_check_circle"
+        android:src="@drawable/checkmark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

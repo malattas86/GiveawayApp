@@ -17,11 +17,13 @@ import com.squareup.picasso.Picasso
 import com.mats.giveawayapp.models.AlertDialogItem
 import android.view.*
 import android.widget.*
+import com.mats.giveawayapp.MyApplication
 
 
 class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityItemDetailsBinding
+    private var onlineStatus: MyApplication = MyApplication()
 
     private var mItemId: String = ""
     private lateinit var mItemDetails: Item
@@ -36,13 +38,17 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
 
         setupActionBar()
         initUi()
-        //getItemDetails()
-
     }
 
     override fun onResume() {
         super.onResume()
+        onlineStatus.onMoveToForeground()
         getItemDetails()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
     }
 
     private fun initUi() {
@@ -50,9 +56,9 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
             mItemId = intent.getStringExtra(Constants.EXTRA_ITEM_ID)!!
         }
 
-        if (intent.hasExtra(Constants.EXTRA_ITEM_OWNER_ID)) {
+        if (intent.hasExtra(Constants.EXTRA_VISIT_USER_ID)) {
             mItemOwnerId =
-                intent.getStringExtra(Constants.EXTRA_ITEM_OWNER_ID)!!
+                intent.getStringExtra(Constants.EXTRA_VISIT_USER_ID)!!
         }
         if (FirestoreClass().getCurrentUserID() == mItemOwnerId) {
             binding.btnAddToCart.visibility = View.GONE
@@ -109,9 +115,9 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
             }
         }
         //mImagesList.addAll(item.images)
-        val itemDetailsImagesAdapter =
-            ItemDetailsImagesAdapter(this, toArrayUri(mImagesList))
-        binding.vpItemDetailImage.adapter = itemDetailsImagesAdapter
+        //val itemDetailsImagesAdapter =
+            //ItemDetailsImagesAdapter(this, toArrayUri(mImagesList))
+        //binding.vpItemDetailImage.adapter = itemDetailsImagesAdapter
         TabLayoutMediator(binding.tabLayout, binding.vpItemDetailImage) { _, _ ->//tab, position ->
             //tab.text = mImagesList[position]
         }.attach()
@@ -123,16 +129,12 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
             tvItemDetailsDescription.text = item.description
             tvItemDetailsAvailableQuantity.text = item.stock_quantity
             tvUsername.text = item.profile_username
+            Picasso.get().load(item.profile_image).into(binding.ivImageProfile)
             if (item.images.size > 1){
                 binding.tabLayout.visibility = View.VISIBLE
             }
             else {
                 binding.tabLayout.visibility = View.GONE
-            }
-            for (image in item.images)
-            {
-                Picasso.get().load(image)
-                    .into(binding.ivImageProfile)
             }
         }
 
@@ -187,7 +189,11 @@ class ItemDetailsActivity : BaseActivity(), View.OnClickListener {
             AlertDialogItem("Send a Message", R.drawable.ic_vector_chat),
             AlertDialogItem("Visit the Profile", R.drawable.ic_vector_person_outline),
         )
-        com.mats.giveawayapp.utils.AlertDialog(this, items, mItemDetails.user_id!!).build()
+        com.mats.giveawayapp.utils.AlertDialog(
+            this,
+            items,
+            mItemDetails.user_id,
+            mItemDetails.profile_username).build()
     }
 
 

@@ -9,6 +9,7 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ItemDashboardLayoutBinding
 import com.mats.giveawayapp.models.Item
 import com.mats.giveawayapp.utils.GlideLoader
+import com.squareup.picasso.Picasso
 
 open class DashboardItemListAdapter(
     private val context: Context,
@@ -75,9 +76,7 @@ open class DashboardItemListAdapter(
 
         if (holder is MyViewHolder) {
 
-            GlideLoader(context)
-                .loadItemPicture(model.images[0]!!,
-                    holder.binding.ivDashboardItemImage)
+            Picasso.get().load(model.images[0]).into(holder.binding.ivDashboardItemImage)
             holder.binding.tvDashboardItemTitle.text = model.title
             holder.binding.tvDashboardItemPrice.text =
                 holder.binding.root.resources.getString(R.string.display_price, model.price)

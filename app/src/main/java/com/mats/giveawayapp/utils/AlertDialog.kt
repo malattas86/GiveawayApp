@@ -17,11 +17,13 @@ import com.mats.giveawayapp.ui.activities.SettingsActivity
 class AlertDialog(
     context: Context,
     items: Array<AlertDialogItem>,
-    userID: String
+    userID: String?,
+    userName: String?
 ) {
     private val mContext = context
     private val mItems = items
     private val mUserID = userID
+    private val mUserName = userName
     fun build(){
         val gradientDrawable = GradientDrawable()
         gradientDrawable.setColor(mContext.resources.getColor(R.color.colorSecondary, mContext.theme))
@@ -58,6 +60,7 @@ class AlertDialog(
                 0 -> {
                     val intent = Intent(mContext, MessageChatActivity::class.java)
                     intent.putExtra(Constants.EXTRA_ITEM_OWNER_ID, mUserID)
+                    intent.putExtra(Constants.EXTRA_VISIT_USERNAME, mUserName)
                     mContext.startActivity(intent)
                 }
                 1 -> {

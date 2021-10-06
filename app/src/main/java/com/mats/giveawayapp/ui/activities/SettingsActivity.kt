@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import com.google.firebase.auth.FirebaseAuth
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivitySettingsBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -16,6 +17,7 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
     private lateinit var mUserDetails: User
 
     private lateinit var binding: ActivitySettingsBinding
+    private var onlineStatus: MyApplication = MyApplication()
     private var mUserID: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,8 +80,8 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
         mUserDetails = user
         hideProgressDialog()
 
-        GlideLoader(this).loadUserPicture(mUserDetails.image!!, binding.ivUserPhoto)
-        "${mUserDetails.firstName} ${mUserDetails.lastName}".also {
+        GlideLoader(this).loadUserPicture(mUserDetails.profileImage!!, binding.ivUserPhoto)
+        "${mUserDetails.firstname} ${mUserDetails.lastname}".also {
             binding.tvName.text = it
         }
         mUserDetails.gender.also { binding.tvGender.text = it }
@@ -90,6 +92,7 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
 
     override fun onResume() {
         super.onResume()
+        onlineStatus.onMoveToForeground()
         if (FirebaseAuth.getInstance().currentUser != null)
             getUserDetails()
 
@@ -98,7 +101,13 @@ class SettingsActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
+    }
+
     private fun onClickLogout() {
+        onlineStatus.onMoveToBackground(0)
         FirebaseAuth.getInstance().signOut()
         val intent = Intent(applicationContext, DashboardActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

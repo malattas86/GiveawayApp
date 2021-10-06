@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityUserProfileBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -23,6 +24,7 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
     private var mSelectedImagesFileURI = ArrayList<Uri?>()
     private var mUserProfileImageURL: String = ""
     private lateinit var binding:ActivityUserProfileBinding
+    private var onlineStatus: MyApplication = MyApplication()
 
     private val requestPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) {
@@ -72,12 +74,12 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
         } else {
             setActionBar()
             binding.tvTitle.text = resources.getString(R.string.title_edit_profile)
-            Picasso.get().load(mUserDetails.image!!)
+            Picasso.get().load(mUserDetails.profileImage!!)
                 .placeholder(R.drawable.ic_profile)
                 .into(binding.ivUserPhoto)
 
-            binding.etFirstName.setText(mUserDetails.firstName)
-            binding.etLastName.setText(mUserDetails.lastName)
+            binding.etFirstname.setText(mUserDetails.firstname)
+            binding.etLastname.setText(mUserDetails.lastname)
 
             if (mUserDetails.mobile != 0L) {
                 binding.etMobileNumber.setText(mUserDetails.mobile.toString())
@@ -92,10 +94,20 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
         binding.etEmail.isEnabled = false
         binding.etEmail.setText(mUserDetails.email)
         binding.etUsername.isEnabled = false
-        binding.etUsername.setText(mUserDetails.userName)
+        binding.etUsername.setText(mUserDetails.username)
 
         binding.ivUserPhoto.setOnClickListener(this)
         binding.btnSubmit.setOnClickListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onlineStatus.onMoveToForeground()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
     }
 
     private fun setActionBar() {
@@ -154,9 +166,9 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
     private fun updateUserProfileDetails() {
         val userHashMap = HashMap<String, Any>()
 
-        val firstName = binding.etFirstName.text.toString().trim { it <= ' '}
+        val firstname = binding.etFirstname.text.toString().trim { it <= ' '}
 
-        val lastName = binding.etLastName.text.toString().trim { it <= ' '}
+        val lastname = binding.etLastname.text.toString().trim { it <= ' '}
 
         val mobileNumber = binding.etMobileNumber.text.toString().trim { it <= ' '}
 
@@ -167,16 +179,16 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
             Constants.FEMALE
         }
 
-        if (mUserProfileImageURL.isNotEmpty() && mUserProfileImageURL != mUserDetails.image) {
+        if (mUserProfileImageURL.isNotEmpty() && mUserProfileImageURL != mUserDetails.profileImage) {
             userHashMap[Constants.IMAGE] = mUserProfileImageURL
         }
 
-        if (firstName.isNotEmpty() && firstName != mUserDetails.firstName) {
-            userHashMap[Constants.FIRSTNAME] = firstName
+        if (firstname.isNotEmpty() && firstname != mUserDetails.firstname) {
+            userHashMap[Constants.FIRSTNAME] = firstname
         }
 
-        if (lastName.isNotEmpty() && lastName != mUserDetails.lastName) {
-            userHashMap[Constants.LASTNAME] = lastName
+        if (lastname.isNotEmpty() && lastname != mUserDetails.lastname) {
+            userHashMap[Constants.LASTNAME] = lastname
         }
 
         if (mobileNumber.isNotEmpty() && mobileNumber != mUserDetails.mobile.toString()) {
@@ -196,7 +208,7 @@ class UserProfileActivity : BaseActivity() , View.OnClickListener{
 
             showProgressDialog(resources.getString(R.string.please_wait))
 
-            if (mSelectedImagesFileURI[0] != null)
+            if (mSelectedImagesFileURI.size != 0)
             {
                 FirestoreClass().uploadImageToCloudStorage(this, mSelectedImagesFileURI,
                 Constants.USER_PROFILE_IMAGE)

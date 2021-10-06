@@ -8,11 +8,13 @@ import android.os.Handler
 import android.os.Looper
 import android.view.WindowInsets
 import android.view.WindowManager
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.databinding.ActivitySplashBinding
 
 class SplashActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySplashBinding
+    private var test: MyApplication = MyApplication()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,5 +39,13 @@ class SplashActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        test.onMoveToForeground()
+    }
 
+    override fun onPause() {
+        super.onPause()
+        test.onMoveToBackground()
+    }
 }

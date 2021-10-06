@@ -3,7 +3,6 @@ package com.mats.giveawayapp.ui.activities
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
@@ -17,6 +16,7 @@ import androidx.core.graphics.BlendModeColorFilterCompat
 import androidx.core.graphics.BlendModeCompat
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityRegisterBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -29,6 +29,8 @@ import com.mats.giveawayapp.utils.Constants
 class RegisterActivity : BaseActivity(), View.OnClickListener {
 
     private lateinit var binding: ActivityRegisterBinding
+    private var onlineStatus: MyApplication = MyApplication()
+
     private var mColor: Int = R.color.weak
     private var mUsernameAlreadyUsed: Boolean = false
 
@@ -63,6 +65,17 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
         observersPassword()
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        onlineStatus.onMoveToForeground()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
+    }
+
     private fun observersPassword() {
         val passwordStrengthCalculator = PasswordStrengthCalculator()
         binding.etRegisterPassword.addTextChangedListener(passwordStrengthCalculator)
@@ -220,13 +233,10 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
                             val firebaseUser: FirebaseUser = task.result!!.user!!
 
                             val user = User(
-                                firebaseUser.uid,
-                                userName = binding.etUsername.text.toString().trim { it <= ' '},
+                                uid = firebaseUser.uid,
+                                username = binding.etUsername.text.toString().trim { it <= ' '},
                                 email = binding.etRegisterEmail.text.toString().trim { it <= ' '},
-                                status = "offline",
-                                facebook = "https://m.facebook.com",
-                                instagram = "https://m.instgram.com",
-                                website = "https://m.google.com"
+                                search = binding.etUsername.text.toString().trim { it <= ' '}.lowercase()
                             )
                             FirestoreClass().registerUser(this, user)
                         }
@@ -239,21 +249,16 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
             }
     }
 
-    fun userRegistrationSuccess() {
-        // Hide the progress dialog
-        hideProgressDialog()
-
-
-        val user2 = User2(
-            uid = FirestoreClass().getCurrentUserID(),
-            username = binding.etUsername.text.toString().trim { it <= ' '},
-            profileImage = "",
-            coverImage = "",
-            status = "offline",
-            search = FirestoreClass().getCurrentUserID().lowercase(),
-            facebook = "https://m.facebook.com",
-            instagram = "https://m.instgram.com",
-            website = "https://m.google.com",
+    fun userRegistrationSuccess(userInfo: User) {
+        val user2 = User(
+            uid = userInfo.uid!!,
+            username = userInfo.username!!,
+            profileImage = userInfo.profileImage!!,
+            status = userInfo.status!!,
+            search = userInfo.search!!,
+            facebook = userInfo.facebook!!,
+            instagram = userInfo.instagram!!,
+            website = userInfo.website!!,
         )
         FirestoreRefClass().registerUser(this, user2)
 
@@ -262,7 +267,11 @@ class RegisterActivity : BaseActivity(), View.OnClickListener {
             resources.getString(R.string.register_success),
             Toast.LENGTH_SHORT
         ).show()
+    }
 
+    fun user2RegistrationSuccess() {
+        // Hide the progress dialog
+        hideProgressDialog()
         /**
          * Here the new user registered is automatically signed-in so we just sign-out the user from firebase
          * and send him to Intro Screen for Sign-In

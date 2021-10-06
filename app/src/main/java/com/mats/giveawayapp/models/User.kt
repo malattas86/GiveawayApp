@@ -4,18 +4,19 @@ import android.os.Parcel
 import android.os.Parcelable
 
 class User(
-    val id: String? = "",
-    val userName: String? = "",
+    val uid: String? = "",
+    val username: String? = "",
     val email: String? = "",
-    val firstName: String? = "",
-    val lastName: String? = "",
-    val image: String? = "",
+    val firstname: String? = "",
+    val lastname: String? = "",
+    val profileImage: String? = "",
     val mobile: Long = 0,
     val gender: String? = "",
-    val status: String? = "",
-    val facebook:String? = "",
-    val instagram:String? = "",
-    val website:String? = "",
+    val status: String? = "offline",
+    val search: String? = "",
+    val facebook:String? = "https://m.facebook.com",
+    val instagram:String? = "https://m.instgram.com",
+    val website:String? = "https://m.google.com",
     val profileCompleted: Int = 0
         ) : Parcelable {
     constructor(parcel: Parcel) : this(
@@ -31,20 +32,22 @@ class User(
         parcel.readString(),
         parcel.readString(),
         parcel.readString(),
+        parcel.readString(),
         parcel.readInt()
     ) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(id)
-        parcel.writeString(userName)
+        parcel.writeString(uid)
+        parcel.writeString(username)
         parcel.writeString(email)
-        parcel.writeString(firstName)
-        parcel.writeString(lastName)
-        parcel.writeString(image)
+        parcel.writeString(firstname)
+        parcel.writeString(lastname)
+        parcel.writeString(profileImage)
         parcel.writeLong(mobile)
         parcel.writeString(gender)
         parcel.writeString(status)
+        parcel.writeString(search)
         parcel.writeString(facebook)
         parcel.writeString(instagram)
         parcel.writeString(website)

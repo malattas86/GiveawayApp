@@ -66,7 +66,7 @@
                     android:id="@+id/iv_item_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/colorImageViewBackground"
+                    android:background="@drawable/ic_vector_image_grau"
                     android:contentDescription="@string/content_description"
                     android:scaleType="fitXY" />
 
@@ -133,7 +133,8 @@
                     android:id="@+id/et_item_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="number"
+                    android:digits="0123456789,"
                     android:padding="@dimen/et_padding"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/et_textSize"/>
@@ -180,7 +181,7 @@
                     android:id="@+id/et_item_quantity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
+                    android:inputType="number"
                     android:padding="@dimen/et_padding"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/et_textSize"/>

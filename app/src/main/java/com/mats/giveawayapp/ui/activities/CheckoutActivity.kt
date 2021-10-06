@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.mats.giveawayapp.MyApplication
 import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.ActivityCheckoutBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
@@ -18,6 +19,7 @@ import com.mats.giveawayapp.utils.Constants
 class CheckoutActivity : BaseActivity() {
 
     private lateinit var binding: ActivityCheckoutBinding
+    private var onlineStatus: MyApplication = MyApplication()
 
     private var mAddressDetails: Address? = null
     private lateinit var mItemsList: ArrayList<Item>
@@ -64,6 +66,16 @@ class CheckoutActivity : BaseActivity() {
             placeAnOrder()
         }
 
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onlineStatus.onMoveToForeground()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onlineStatus.onMoveToBackground()
     }
 
     private fun setupActionBar() {

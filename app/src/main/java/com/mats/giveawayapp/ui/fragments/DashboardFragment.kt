@@ -11,10 +11,7 @@ import com.mats.giveawayapp.R
 import com.mats.giveawayapp.databinding.FragmentDashboardBinding
 import com.mats.giveawayapp.firestore.FirestoreClass
 import com.mats.giveawayapp.models.Item
-import com.mats.giveawayapp.ui.activities.CartListActivity
-import com.mats.giveawayapp.ui.activities.ItemDetailsActivity
-import com.mats.giveawayapp.ui.activities.LoginActivity
-import com.mats.giveawayapp.ui.activities.SettingsActivity
+import com.mats.giveawayapp.ui.activities.*
 import com.mats.giveawayapp.ui.adapters.DashboardItemListAdapter
 import com.mats.giveawayapp.utils.Constants
 
@@ -104,7 +101,7 @@ class DashboardFragment : BaseFragment(), View.OnClickListener {
             binding.actionSettings -> {
                 if (FirebaseAuth.getInstance().currentUser != null)
                 {
-                    val intent = Intent(activity, SettingsActivity::class.java)
+                    val intent = Intent(activity, TvShowActivity::class.java)
                     intent.putExtra(
                         Constants.EXTRA_LOGGED_IN_ID,
                         FirestoreClass().getCurrentUserID()

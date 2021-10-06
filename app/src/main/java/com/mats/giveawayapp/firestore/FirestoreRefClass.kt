@@ -1,10 +1,9 @@
 package com.mats.giveawayapp.firestore
 
-import android.app.Activity
-import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.mats.giveawayapp.models.User
 import com.mats.giveawayapp.models.User2
 import com.mats.giveawayapp.ui.activities.RegisterActivity
 import com.mats.giveawayapp.ui.fragments.ChatFragment
@@ -15,15 +14,17 @@ class FirestoreRefClass {
     private val mFireReference = FirebaseDatabase.
     getInstance("https://giveawayapp-1caa9-default-rtdb.europe-west1.firebasedatabase.app")
 
-    fun registerUser(activity: RegisterActivity, userInfo: User2) {
+    fun registerUser(activity: RegisterActivity, userInfo: User) {
         // The "user" is collection name. If the collection is already created then it will not
         // create the same one again.
-        userInfo.uid?.let {
+        userInfo.uid.let {
             mFireReference.reference
                 .child(Constants.USERS)
-                .child(it)
+                .child(it!!)
                 .setValue(userInfo)
-                .addOnSuccessListener {  }
+                .addOnSuccessListener {
+                    activity.user2RegistrationSuccess()
+                }
                 .addOnFailureListener { e->
                     Log.e(
                         activity.javaClass.simpleName,
@@ -52,7 +53,7 @@ class FirestoreRefClass {
             .child(FirestoreClass().getCurrentUserID())
             .addValueEventListener(object : ValueEventListener{
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    if (snapshot.exists()) {
+                    if (snapshot.exists() && (FirebaseAuth.getInstance().currentUser != null)) {
                         val user: User2? = snapshot.getValue(User2::class.java)
                         context.setUserDetails(user)
                     }
@@ -62,9 +63,6 @@ class FirestoreRefClass {
                     TODO("Not yet implemented")
                 }
             })
+
     }
-}
-
-private fun DatabaseReference.addValueEventListener(any: Any) {
-
 }
